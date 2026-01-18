@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="ActivityClub.API/ActivityClub.API.csproj" />
+  <Project Path="ActivityClub.Data/ActivityClub.Data.csproj" />
+</Solution>
