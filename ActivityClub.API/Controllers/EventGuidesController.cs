@@ -1,4 +1,4 @@
-﻿using ActivityClub.API.DTOs.EventGuides;
+﻿using ActivityClub.Contracts.DTOs.EventGuides;
 using ActivityClub.Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

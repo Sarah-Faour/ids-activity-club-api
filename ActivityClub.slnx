@@ -1,4 +1,10 @@
 <Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".gitignore" />
+  </Folder>
   <Project Path="ActivityClub.API/ActivityClub.API.csproj" />
+  <Project Path="ActivityClub.Contracts/ActivityClub.Contracts.csproj" Id="ee1231f4-f246-4e4f-afb2-d90f540ee095" />
   <Project Path="ActivityClub.Data/ActivityClub.Data.csproj" />
+  <Project Path="ActivityClub.Repositories/ActivityClub.Repositories.csproj" Id="98302fb3-d886-484e-a3c8-855681935af8" />
+  <Project Path="ActivityClub.Services/ActivityClub.Services.csproj" Id="5da6f516-5d7b-49fc-8d31-934f93f3706a" />
 </Solution>

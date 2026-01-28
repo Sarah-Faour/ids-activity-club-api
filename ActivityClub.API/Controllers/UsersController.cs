@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
-using ActivityClub.API.DTOs.Roles;
-using ActivityClub.API.DTOs.Users;
+using ActivityClub.Contracts.DTOs.Roles;
+using ActivityClub.Contracts.DTOs.Users;
 using ActivityClub.Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

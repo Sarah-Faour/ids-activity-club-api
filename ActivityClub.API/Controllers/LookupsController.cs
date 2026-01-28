@@ -1,4 +1,4 @@
-﻿using ActivityClub.API.DTOs.Lookups;
+﻿using ActivityClub.Contracts.DTOs.Lookups;
 using ActivityClub.Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

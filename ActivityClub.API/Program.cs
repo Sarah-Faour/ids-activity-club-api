@@ -1,5 +1,11 @@
+﻿using ActivityClub.API.Middlewares;
 using ActivityClub.Data.Models;
+using ActivityClub.Repositories.Implementations;
+using ActivityClub.Repositories.Interfaces;
+using ActivityClub.Services.Implementations;
+using ActivityClub.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+
 
 namespace ActivityClub.API
 {
@@ -19,13 +25,20 @@ namespace ActivityClub.API
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
 
+            builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            builder.Services.AddScoped<IMemberService, MemberService>();
+
+
             builder.Services.AddDbContext<ActivityClubDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("ActivityClubDb")));
 
 
             var app = builder.Build();
-
+            
             // Configure the HTTP request pipeline.
+            // Global exception handler should be FIRST (wraps everything)
+            app.UseMiddleware<ExceptionHandlingMiddleware>();
+            
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();

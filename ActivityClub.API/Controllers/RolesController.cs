@@ -1,4 +1,4 @@
-﻿using ActivityClub.API.DTOs.Roles;
+﻿using ActivityClub.Contracts.DTOs.Roles;
 using ActivityClub.Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

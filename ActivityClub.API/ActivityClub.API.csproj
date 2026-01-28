@@ -24,7 +24,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ActivityClub.Data\ActivityClub.Data.csproj" />
+    <ProjectReference Include="..\ActivityClub.Contracts\ActivityClub.Contracts.csproj" />
+    <ProjectReference Include="..\ActivityClub.Services\ActivityClub.Services.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="DTOs\" />
   </ItemGroup>
 
 </Project>
