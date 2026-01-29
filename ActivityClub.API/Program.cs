@@ -28,6 +28,8 @@ namespace ActivityClub.API
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             builder.Services.AddScoped<IMemberService, MemberService>();
             builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IGuideService, GuideService>();
+
 
 
 
