@@ -30,6 +30,8 @@ namespace ActivityClub.API
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IGuideService, GuideService>();
             builder.Services.AddScoped<IEventService, EventService>();
+            builder.Services.AddScoped<ILookupService, LookupService>();
+
 
 
 

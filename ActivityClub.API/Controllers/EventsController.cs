@@ -34,7 +34,7 @@ namespace ActivityClub.API.Controllers
         public async Task<ActionResult<EventResponseDto>> CreateEvent(CreateEventDto dto)
         {
             var created = await _eventService.CreateAsync(dto);
-            return CreatedAtAction(nameof(GetEvent), new { id = created.EventId }, created);
+            return CreatedAtAction(nameof(GetEvent), new { id = created.EventId }, created); //returns 201 + location header
         }
 
         [HttpPut("{id:int}")]
