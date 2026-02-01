@@ -1,7 +1,6 @@
 ﻿using ActivityClub.Contracts.DTOs.Roles;
-using ActivityClub.Data.Models;
+using ActivityClub.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace ActivityClub.API.Controllers
 {
@@ -9,11 +8,11 @@ namespace ActivityClub.API.Controllers
     [Route("api/[controller]")]
     public class RolesController : ControllerBase
     {
-        private readonly ActivityClubDbContext _context;
+        private readonly IRoleService _roleService;
 
-        public RolesController(ActivityClubDbContext context)
+        public RolesController(IRoleService roleService)
         {
-            _context = context;
+            _roleService = roleService;
         }
 
         // GET: api/roles
@@ -21,15 +20,7 @@ namespace ActivityClub.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<RoleResponseDto>>> GetRoles()
         {
-            var roles = await _context.Roles
-                .OrderBy(r => r.RoleName)
-                .Select(r => new RoleResponseDto
-                {
-                    RoleId = r.RoleId,
-                    RoleName = r.RoleName
-                })
-                .ToListAsync();
-
+            var roles = await _roleService.GetAllAsync();
             return Ok(roles);
         }
 
@@ -37,14 +28,7 @@ namespace ActivityClub.API.Controllers
         [HttpGet("{id:int}")]
         public async Task<ActionResult<RoleResponseDto>> GetRole(int id)
         {
-            var role = await _context.Roles
-                .Where(r => r.RoleId == id)
-                .Select(r => new RoleResponseDto
-                {
-                    RoleId = r.RoleId,
-                    RoleName = r.RoleName
-                })
-                .FirstOrDefaultAsync();
+            var role = await _roleService.GetByIdAsync(id);
 
             if (role is null)
                 return NotFound();
