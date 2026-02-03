@@ -6,7 +6,7 @@ A clean, layered ASP.NET Core Web API built as part of the IDS Internship assign
 
 ## Overview
 
-This project implements a backend API for an **Activity Club** system, handling:
+This project implements a backend API for an Activity Club system, handling:
 - Members
 - Users
 - Roles
@@ -14,7 +14,7 @@ This project implements a backend API for an **Activity Club** system, handling:
 - Guides
 - Lookups
 
-The architecture follows a **clean separation of concerns** using:
+The architecture follows a clean separation of concerns using:
 - Repository pattern
 - Service layer
 - DTOs
@@ -24,6 +24,9 @@ The architecture follows a **clean separation of concerns** using:
 ---
 
 ##  Solution Structure
+
+'''text'''
+...structure...
 
 ActivityClub
 |
@@ -71,7 +74,7 @@ ActivityClub
 2. Update the connection string in `appsettings.json`
 3. Run database migrations if needed
 4. Run the API:
-   ```bash
+   '''bash'''
    dotnet run
 5. open Swagger: https://localhost:<port>/swagger
 
