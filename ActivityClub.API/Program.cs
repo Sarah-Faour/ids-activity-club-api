@@ -5,6 +5,8 @@ using ActivityClub.Repositories.Interfaces;
 using ActivityClub.Services.Implementations;
 using ActivityClub.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using ActivityClub.Services.Mapping;
+using AutoMapper;
 
 
 namespace ActivityClub.API
@@ -18,6 +20,13 @@ namespace ActivityClub.API
             // Add services to the container.
 
             builder.Services.AddControllers();
+
+            
+            //AutoMapper
+            builder.Services.AddAutoMapper(cfg => { }, typeof(ActivityClubProfile));
+
+
+
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -34,7 +43,6 @@ namespace ActivityClub.API
             builder.Services.AddScoped<IRoleService, RoleService>();
             builder.Services.AddScoped<IEventMemberService, EventMemberService>();
             builder.Services.AddScoped<IEventGuideService, EventGuideService>();
-
 
 
             builder.Services.AddDbContext<ActivityClubDbContext>(options =>
