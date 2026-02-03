@@ -25,8 +25,7 @@ The architecture follows a clean separation of concerns using:
 
 ##  Solution Structure
 
-'''text'''
-...structure...
+```text
 
 ActivityClub
 |
@@ -40,7 +39,7 @@ ActivityClub
 |-- README.md
 |-- .gitignore
 
-
+```
 
 
 ---
@@ -74,8 +73,9 @@ ActivityClub
 2. Update the connection string in `appsettings.json`
 3. Run database migrations if needed
 4. Run the API:
-   '''bash'''
-   dotnet run
+   ```bash
+   dotnet run 
+```
 5. open Swagger: https://localhost:<port>/swagger
 
 
