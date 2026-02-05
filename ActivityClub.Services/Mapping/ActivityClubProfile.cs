@@ -23,7 +23,8 @@ namespace ActivityClub.Services.Mapping
                     o => o.MapFrom(s => s.Nationality != null ? s.Nationality.Name : null));
 
             CreateMap<CreateMemberDto, Member>();
-            CreateMap<UpdateMemberDto, Member>();
+            CreateMap<UpdateMemberDto, Member>()
+                .ForMember(d => d.UserId, o => o.Ignore());
 
             // ========================
             // Guides
