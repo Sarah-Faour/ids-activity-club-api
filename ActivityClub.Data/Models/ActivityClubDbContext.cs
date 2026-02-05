@@ -43,6 +43,10 @@ public partial class ActivityClubDbContext : DbContext
         {
             entity.HasKey(e => e.EventId).HasName("PK__Event__7944C810F343F319");
 
+            entity.HasIndex(e => new { e.Name, e.Destination, e.DateFrom }, "UI_Event_ActiveSignature")
+                .IsUnique()
+                .HasFilter("([IsActive]=(1))");
+
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getdate())");
             entity.Property(e => e.IsActive).HasDefaultValue(true);
 
