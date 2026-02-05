@@ -51,6 +51,7 @@ namespace ActivityClub.Services.Mapping
             // ========================
             CreateMap<Role, RoleResponseDto>();
 
+
             // ========================
             // Users
             // ========================
