@@ -4,9 +4,14 @@ using ActivityClub.Repositories.Implementations;
 using ActivityClub.Repositories.Interfaces;
 using ActivityClub.Services.Implementations;
 using ActivityClub.Services.Interfaces;
-using Microsoft.EntityFrameworkCore;
 using ActivityClub.Services.Mapping;
 using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+
 
 
 namespace ActivityClub.API
@@ -21,7 +26,33 @@ namespace ActivityClub.API
 
             builder.Services.AddControllers();
 
-            
+
+            //Add Authentication(JWT based) 
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+
+                    ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                    ValidAudience = builder.Configuration["Jwt:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)
+                    ),
+                    ClockSkew = TimeSpan.Zero
+                };
+            });
+
+
+
             //AutoMapper
             builder.Services.AddAutoMapper(cfg => { }, typeof(ActivityClubProfile));
 
@@ -43,6 +74,10 @@ namespace ActivityClub.API
             builder.Services.AddScoped<IRoleService, RoleService>();
             builder.Services.AddScoped<IEventMemberService, EventMemberService>();
             builder.Services.AddScoped<IEventGuideService, EventGuideService>();
+            builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+            builder.Services.AddAuthorization();
+
 
 
             builder.Services.AddDbContext<ActivityClubDbContext>(options =>
@@ -65,7 +100,8 @@ namespace ActivityClub.API
 
             app.UseHttpsRedirection();
 
-            app.UseAuthorization();
+            app.UseAuthentication(); // authentication (auth)
+            app.UseAuthorization();  // authorization (auth)
 
 
             app.MapControllers();
