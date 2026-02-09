@@ -1,6 +1,6 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography;
+//using System.Security.Cryptography;
 using System.Text;
 using ActivityClub.Contracts.DTOs.Auth;
 using ActivityClub.Data.Models;
@@ -44,6 +44,7 @@ namespace ActivityClub.Services.Implementations
 
             var verify = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, dto.Password);
 
+            /*
             if (verify == PasswordVerificationResult.Failed)
             {
                 // Optional legacy support (if old users were saved with SHA256)
@@ -56,6 +57,11 @@ namespace ActivityClub.Services.Implementations
                 _userRepo.Update(user);
                 await _userRepo.SaveChangesAsync();
             }
+            */
+
+            if (verify == PasswordVerificationResult.Failed)
+                return null;
+
             else if (verify == PasswordVerificationResult.SuccessRehashNeeded)
             {
                 // Upgrade hash if framework says the stored hash is using older parameters
@@ -111,11 +117,13 @@ namespace ActivityClub.Services.Implementations
             return (token, expiresAtUtc);
         }
 
+        /*
         private static string LegacySha256(string password)
         {
             using var sha = SHA256.Create();
             var bytes = sha.ComputeHash(Encoding.UTF8.GetBytes(password));
             return Convert.ToBase64String(bytes);
         }
+        */
     }
 }

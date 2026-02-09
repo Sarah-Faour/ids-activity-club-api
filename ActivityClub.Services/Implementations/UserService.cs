@@ -1,5 +1,5 @@
-﻿using System.Security.Cryptography;
-using System.Text;
+﻿//using System.Security.Cryptography;
+//using System.Text;
 using ActivityClub.Contracts.Constants;
 using ActivityClub.Contracts.DTOs.Roles;
 using ActivityClub.Contracts.DTOs.Users;
@@ -8,6 +8,7 @@ using ActivityClub.Repositories.Interfaces;
 using ActivityClub.Services.Interfaces;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace ActivityClub.Services.Implementations
@@ -18,6 +19,7 @@ namespace ActivityClub.Services.Implementations
         private readonly IGenericRepository<Role> _roleRepo;
         private readonly IGenericRepository<Lookup> _lookupRepo;
         private readonly IMapper _mapper;
+        private readonly IPasswordHasher<User> _passwordHasher;
 
         // Reusable projection: EF can translate this to SQL
         /*
@@ -44,12 +46,14 @@ namespace ActivityClub.Services.Implementations
             IGenericRepository<User> userRepo,
             IGenericRepository<Role> roleRepo,
             IGenericRepository<Lookup> lookupRepo,
-            IMapper mapper)
+            IMapper mapper,
+            IPasswordHasher<User> passwordHasher)
         {
             _userRepo = userRepo;
             _roleRepo = roleRepo;
             _lookupRepo = lookupRepo;
             _mapper = mapper;
+            _passwordHasher = passwordHasher;
         }
 
         // ----------------------------
@@ -92,9 +96,15 @@ namespace ActivityClub.Services.Implementations
 
             // Map DTO -> entity (PasswordHash ignored by mapping)
             var user = _mapper.Map<User>(dto);
-            user.PasswordHash = HashPassword(dto.Password);
+
+            
             user.IsActive = true;
             user.CreatedAt = DateTime.UtcNow;
+            //user.PasswordHash = HashPassword(dto.Password);
+
+
+            // ✅ One hashing strategy across the whole system: ASP.NET Identity hasher
+            user.PasswordHash = _passwordHasher.HashPassword(user, dto.Password);
 
             await _userRepo.AddAsync(user);
             await _userRepo.SaveChangesAsync();
@@ -219,6 +229,7 @@ namespace ActivityClub.Services.Implementations
         // Helpers
         // ----------------------------
 
+       /*
         private static string HashPassword(string password)
         {
             // Not production-grade (later: BCrypt / Identity). For now keep consistent with your controller.
@@ -226,5 +237,6 @@ namespace ActivityClub.Services.Implementations
             var bytes = sha.ComputeHash(Encoding.UTF8.GetBytes(password));
             return Convert.ToBase64String(bytes);
         }
+       */
     }
 }
