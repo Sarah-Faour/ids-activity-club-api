@@ -1,11 +1,13 @@
 ﻿using ActivityClub.Contracts.DTOs.Members;
 using ActivityClub.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ActivityClub.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize] // secure-by-default: JWT required for all endpoints
     public class MembersController : ControllerBase
     {
         private readonly IMemberService _memberService;
@@ -15,7 +17,7 @@ namespace ActivityClub.API.Controllers
             _memberService = memberService;
         }
 
-        // GET: api/Members
+        // GET: api/Members  (authenticated)
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MemberResponseDto>>> GetMembers()
         {
@@ -23,7 +25,7 @@ namespace ActivityClub.API.Controllers
             return Ok(members);
         }
 
-        // GET: api/Members/5
+        // GET: api/Members/5  (authenticated)
         [HttpGet("{id:int}")]
         public async Task<ActionResult<MemberResponseDto>> GetMember(int id)
         {
@@ -36,8 +38,10 @@ namespace ActivityClub.API.Controllers
 
         }
 
+        // POST: api/members (ADMIN only)
+        [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<ActionResult<MemberResponseDto>> CreateMember(CreateMemberDto dto)
+        public async Task<ActionResult<MemberResponseDto>> CreateMember([FromBody] CreateMemberDto dto)
         {
             var created = await _memberService.CreateAsync(dto);
 
@@ -45,8 +49,10 @@ namespace ActivityClub.API.Controllers
             return CreatedAtAction(nameof(GetMember), new { id = created.MemberId }, created);
         }
 
+        // PUT: api/members/5 (ADMIN only)
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> UpdateMember(int id, UpdateMemberDto dto)
+        public async Task<IActionResult> UpdateMember(int id, [FromBody] UpdateMemberDto dto)
         {
             var updated = await _memberService.UpdateAsync(id, dto);
 
@@ -56,7 +62,8 @@ namespace ActivityClub.API.Controllers
             return NoContent(); // 204
         }
 
-        // DELETE: api/members/{id}
+        // DELETE: api/members/{id}  (ADMIN only)
+        [Authorize(Roles = "Admin")]
         // Soft delete: deactivate the Member profile (User stays active for Guide/Admin)
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteMember(int id)

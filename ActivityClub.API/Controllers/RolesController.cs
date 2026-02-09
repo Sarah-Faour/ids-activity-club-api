@@ -1,11 +1,13 @@
 ﻿using ActivityClub.Contracts.DTOs.Roles;
 using ActivityClub.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ActivityClub.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize] // all endpoints require authentication
     public class RolesController : ControllerBase
     {
         private readonly IRoleService _roleService;

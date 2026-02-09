@@ -1,12 +1,14 @@
 ﻿using ActivityClub.Contracts.DTOs.Roles;
 using ActivityClub.Contracts.DTOs.Users;
 using ActivityClub.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ActivityClub.API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")] 
+    [Route("api/[controller]")]
+    [Authorize] // all endpoints require a valid JWT by default
     public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -16,7 +18,7 @@ namespace ActivityClub.API.Controllers
             _userService = userService;
         }
 
-        // GET: api/users
+        // GET: api/users  (authenticated)
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserResponseDto>>> GetUsers()
         {
@@ -24,7 +26,7 @@ namespace ActivityClub.API.Controllers
             return Ok(users);
         }
 
-        // GET: api/users/5
+        // GET: api/users/5  (authenticated)
         [HttpGet("{id:int}")]
         public async Task<ActionResult<UserResponseDto>> GetUser(int id)
         {
@@ -33,24 +35,27 @@ namespace ActivityClub.API.Controllers
             return Ok(user);
         }
 
-        // POST: api/users
+        // POST: api/users  (ADMIN only)
+        [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<ActionResult<UserResponseDto>> CreateUser(CreateUserDto dto)
+        public async Task<ActionResult<UserResponseDto>> CreateUser([FromBody] CreateUserDto dto) //[FromBody] tells ASP.NET this parameter comes from the HTTP request body (JSON), where [ApiController] makes it optional, but explicit is clean.
         {
             var created = await _userService.CreateAsync(dto);
             return CreatedAtAction(nameof(GetUser), new { id = created.UserId }, created);
         }
 
-        // PUT: api/users/5
+        // PUT: api/users/5  (ADMIN only)
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> UpdateUser(int id, UpdateUserDto dto)
+        public async Task<IActionResult> UpdateUser(int id, [FromBody] UpdateUserDto dto)
         {
             var updated = await _userService.UpdateAsync(id, dto);
             if (!updated) return NotFound();
             return NoContent();
         }
 
-        // DELETE: api/users/5
+        // DELETE: api/users/5  (ADMIN only)
+        [Authorize(Roles ="Admin")]
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
@@ -59,7 +64,8 @@ namespace ActivityClub.API.Controllers
             return NoContent();
         }
 
-        // POST: api/users/5/reactivate
+        // POST: api/users/5/reactivate  (ADMIN only)
+        [Authorize(Roles = "Admin")]
         [HttpPost("{id:int}/reactivate")]
         public async Task<IActionResult> ReactivateUser(int id)
         {
@@ -68,7 +74,7 @@ namespace ActivityClub.API.Controllers
             return NoContent();
         }
 
-        // GET: api/users/5/roles
+        // GET: api/users/5/roles  (authenticated)
         [HttpGet("{id:int}/roles")]
         public async Task<ActionResult<IEnumerable<RoleResponseDto>>> GetUserRoles(int id)
         {
@@ -77,7 +83,8 @@ namespace ActivityClub.API.Controllers
             return Ok(roles);
         }
 
-        // POST: api/users/5/roles/2
+        // POST: api/users/5/roles/2  (ADMIN only)
+        [Authorize(Roles = "Admin")]
         [HttpPost("{id:int}/roles/{roleId:int}")]
         public async Task<IActionResult> AssignRole(int id, int roleId)
         {
@@ -86,7 +93,8 @@ namespace ActivityClub.API.Controllers
             return NoContent();
         }
 
-        // DELETE: api/users/5/roles/2
+        // DELETE: api/users/5/roles/2  (ADMIN only)
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id:int}/roles/{roleId:int}")]
         public async Task<IActionResult> UnassignRole(int id, int roleId)
         {

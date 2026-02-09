@@ -1,11 +1,13 @@
 ﻿using ActivityClub.Contracts.DTOs.Guides;
 using ActivityClub.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ActivityClub.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize] // JWT required by default
     public class GuidesController : ControllerBase
     {
         private readonly IGuideService _guideService;
@@ -15,6 +17,7 @@ namespace ActivityClub.API.Controllers
             _guideService = guideService;
         }
 
+        // GET: api/guides (authenticated)
         [HttpGet]
         public async Task<ActionResult<IEnumerable<GuideResponseDto>>> GetGuides()
         {
@@ -22,6 +25,7 @@ namespace ActivityClub.API.Controllers
             return Ok(guides);
         }
 
+        // GET: api/guides/5 (authenticated)
         [HttpGet("{id:int}")]
         public async Task<ActionResult<GuideResponseDto>> GetGuide(int id)
         {
@@ -30,21 +34,27 @@ namespace ActivityClub.API.Controllers
             return Ok(guide);
         }
 
+        // POST: api/guides (ADMIN only)
+        [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<ActionResult<GuideResponseDto>> CreateGuide(CreateGuideDto dto)
+        public async Task<ActionResult<GuideResponseDto>> CreateGuide([FromBody] CreateGuideDto dto)
         {
             var created = await _guideService.CreateAsync(dto);
             return CreatedAtAction(nameof(GetGuide), new { id = created.GuideId }, created);
         }
 
+        // PUT: api/guides/5 (ADMIN only)
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> UpdateGuide(int id, UpdateGuideDto dto)
+        public async Task<IActionResult> UpdateGuide(int id, [FromBody] UpdateGuideDto dto)
         {
             var updated = await _guideService.UpdateAsync(id, dto);
             if (!updated) return NotFound();
             return NoContent();
         }
 
+        // DELETE: api/guides/5 (ADMIN only)
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteGuide(int id)
         {

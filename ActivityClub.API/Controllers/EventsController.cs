@@ -1,11 +1,13 @@
 ﻿using ActivityClub.Contracts.DTOs.Events;
 using ActivityClub.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ActivityClub.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize] // JWT required by default
     public class EventsController : ControllerBase
     {
         private readonly IEventService _eventService;
@@ -15,6 +17,7 @@ namespace ActivityClub.API.Controllers
             _eventService = eventService;
         }
 
+        // GET: api/events (authenticated)
         [HttpGet]
         public async Task<ActionResult<IEnumerable<EventResponseDto>>> GetEvents()
         {
@@ -22,6 +25,7 @@ namespace ActivityClub.API.Controllers
             return Ok(events);
         }
 
+        // GET: api/events/5 (authenticated)
         [HttpGet("{id:int}")]
         public async Task<ActionResult<EventResponseDto>> GetEvent(int id)
         {
@@ -30,21 +34,27 @@ namespace ActivityClub.API.Controllers
             return Ok(ev);
         }
 
+        // POST: api/events (ADMIN only)
+        [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<ActionResult<EventResponseDto>> CreateEvent(CreateEventDto dto)
+        public async Task<ActionResult<EventResponseDto>> CreateEvent([FromBody] CreateEventDto dto)
         {
             var created = await _eventService.CreateAsync(dto);
             return CreatedAtAction(nameof(GetEvent), new { id = created.EventId }, created); //returns 201 + location header
         }
 
+        // PUT: api/events/5 (ADMIN only)
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> UpdateEvent(int id, UpdateEventDto dto)
+        public async Task<IActionResult> UpdateEvent(int id, [FromBody] UpdateEventDto dto)
         {
             var updated = await _eventService.UpdateAsync(id, dto);
             if (!updated) return NotFound();
             return NoContent();
         }
 
+        // DELETE: api/events/5 (ADMIN only)
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteEvent(int id)
         {

@@ -1,11 +1,13 @@
 ﻿using ActivityClub.Contracts.DTOs.EventGuides;
 using ActivityClub.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ActivityClub.API.Controllers
 {
     [ApiController]
     [Route("api/events/{eventId:int}/guides")]
+    [Authorize] // JWT required by default
     public class EventGuidesController : ControllerBase
     {
         private readonly IEventGuideService _service;
@@ -15,34 +17,38 @@ namespace ActivityClub.API.Controllers
             _service = service;
         }
 
-        // GET: /api/events/{eventId}/guides
+        // GET: /api/events/{eventId}/guides  (authenticated)
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<EventGuideResponseDto>>> GetGuidesForEvent(int eventId)
+        public async Task<ActionResult<IEnumerable<EventGuideResponseDto>>> GetGuidesForEvent([FromRoute] int eventId)
         {
             var guides = await _service.GetGuidesForEventAsync(eventId);
 
             if (guides is null)
-                return NotFound("Event not found or inactive.");
+                //return NotFound("Event not found or inactive.");
+                return NotFound(new { message = "Event not found or inactive." });
 
             return Ok(guides);
         }
 
-        // POST: /api/events/{eventId}/guides
+        // POST: /api/events/{eventId}/guides  (ADMIN only)
+        [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<ActionResult<EventGuideResponseDto>> AssignGuideToEvent(int eventId, AssignGuideDto dto)
+        public async Task<ActionResult<EventGuideResponseDto>> AssignGuideToEvent([FromRoute] int eventId, [FromBody] AssignGuideDto dto)
         {
             var created = await _service.AssignGuideToEventAsync(eventId, dto);
             return CreatedAtAction(nameof(GetGuidesForEvent), new { eventId }, created);
         }
 
-        // DELETE: /api/events/{eventId}/guides/{guideId}
+        // DELETE: /api/events/{eventId}/guides/{guideId}  (ADMIN only)
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{guideId:int}")]
-        public async Task<IActionResult> UnassignGuideFromEvent(int eventId, int guideId)
+        public async Task<IActionResult> UnassignGuideFromEvent([FromRoute] int eventId, [FromRoute] int guideId)
         {
             var removed = await _service.UnassignGuideFromEventAsync(eventId, guideId);
 
             if (!removed)
-                return NotFound("Assignment not found.");
+                //return NotFound("Assignment not found.");
+                return NotFound(new { message = "Assignment not found." });
 
             return NoContent();
         }
