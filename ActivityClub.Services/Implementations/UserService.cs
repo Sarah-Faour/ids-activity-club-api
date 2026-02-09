@@ -225,18 +225,65 @@ namespace ActivityClub.Services.Implementations
             return true;
         }
 
+        // --------------------------------------
+        // Updating Email and Password endpoints
+        // --------------------------------------
+
+        public async Task<bool> UpdateEmailAsync(int id, UpdateUserEmailDto dto)
+        {
+            //verify that user exist and active
+            var user = await _userRepo.Query()
+                .FirstOrDefaultAsync(u => u.UserId == id && u.IsActive);
+
+            if (user is null)
+                return false;
+
+            //normalize the new email and verify that it doesn't exist
+            var newEmailKey = dto.Email.Trim().ToUpper();
+
+            var emailExists = await _userRepo.Query().AnyAsync(u =>
+                u.UserId != id &&
+                u.Email.Trim().ToUpper() == newEmailKey);
+
+            if (emailExists)
+                throw new InvalidOperationException("Email already exists.");
+
+            user.Email = dto.Email.Trim();
+            await _userRepo.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> ChangePasswordAsync(int id, ChangePasswordDto dto)
+        {
+            var user = await _userRepo.Query()
+                .FirstOrDefaultAsync(u => u.UserId == id && u.IsActive);
+
+            if (user is null)
+                return false;
+
+            var verify = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, dto.CurrentPassword);
+
+            if (verify == PasswordVerificationResult.Failed)
+                throw new InvalidOperationException("Current password is incorrect.");
+
+            user.PasswordHash = _passwordHasher.HashPassword(user, dto.NewPassword);
+            await _userRepo.SaveChangesAsync();
+            return true;
+        }
+
+
         // ----------------------------
         // Helpers
         // ----------------------------
 
-       /*
-        private static string HashPassword(string password)
-        {
-            // Not production-grade (later: BCrypt / Identity). For now keep consistent with your controller.
-            using var sha = SHA256.Create();
-            var bytes = sha.ComputeHash(Encoding.UTF8.GetBytes(password));
-            return Convert.ToBase64String(bytes);
-        }
-       */
+        /*
+         private static string HashPassword(string password)
+         {
+             // Not production-grade (later: BCrypt / Identity). For now keep consistent with your controller.
+             using var sha = SHA256.Create();
+             var bytes = sha.ComputeHash(Encoding.UTF8.GetBytes(password));
+             return Convert.ToBase64String(bytes);
+         }
+        */
     }
 }

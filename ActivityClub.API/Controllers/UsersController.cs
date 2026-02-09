@@ -18,6 +18,10 @@ namespace ActivityClub.API.Controllers
             _userService = userService;
         }
 
+        // ----------------------------
+        // Users CRUD
+        // ----------------------------
+
         // GET: api/users  (authenticated)
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserResponseDto>>> GetUsers()
@@ -74,6 +78,10 @@ namespace ActivityClub.API.Controllers
             return NoContent();
         }
 
+        // ----------------------------
+        // Role Assignement endpoints
+        // ----------------------------
+
         // GET: api/users/5/roles  (authenticated)
         [HttpGet("{id:int}/roles")]
         public async Task<ActionResult<IEnumerable<RoleResponseDto>>> GetUserRoles(int id)
@@ -102,5 +110,30 @@ namespace ActivityClub.API.Controllers
             if (!ok) return NotFound();
             return NoContent();
         }
+
+        // --------------------------------------
+        // Updating Email and Password endpoints
+        // --------------------------------------
+
+        // PUT: api/users/5/email  (ADMIN only — for now)
+        [Authorize(Roles = "Admin")]
+        [HttpPut("{id:int}/email")]
+        public async Task<IActionResult> UpdateEmail(int id, [FromBody] UpdateUserEmailDto dto)
+        {
+            var ok = await _userService.UpdateEmailAsync(id, dto);
+            if (!ok) return NotFound();
+            return NoContent();
+        }
+
+        // PUT: api/users/5/password  (ADMIN only — for now)
+        [Authorize(Roles = "Admin")]
+        [HttpPut("{id:int}/password")]
+        public async Task<IActionResult> ChangePassword(int id, [FromBody] ChangePasswordDto dto)
+        {
+            var ok = await _userService.ChangePasswordAsync(id, dto);
+            if (!ok) return NotFound();
+            return NoContent();
+        }
+
     }
 }

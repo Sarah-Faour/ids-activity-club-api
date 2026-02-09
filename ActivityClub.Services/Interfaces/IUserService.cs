@@ -17,5 +17,9 @@ namespace ActivityClub.Services.Interfaces
         Task<List<RoleResponseDto>?> GetRolesAsync(int userId);
         Task<bool> AssignRoleAsync(int userId, int roleId);
         Task<bool> UnassignRoleAsync(int userId, int roleId);
+
+        // (not required — better for Murex), changing Email/Pass safely
+        Task<bool> UpdateEmailAsync(int id, UpdateUserEmailDto dto);
+        Task<bool> ChangePasswordAsync(int id, ChangePasswordDto dto);
     }
 }
