@@ -1,0 +1,5 @@
+[33mcommit 365dcd46c3ba5cc3a0ad8f53554b109244ec5cbf[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m
+Author: Sarah Faour <sarah.nabil.faour@gmail.com>
+Date:   Mon Feb 9 09:11:17 2026 +0200
+
+    Protect API endpoints using JWT authorization and roles
