@@ -33,5 +33,18 @@ namespace ActivityClub.API.Controllers
 
             return Ok(result);
         }
+
+        // POST: /api/auth/register
+        [AllowAnonymous]
+        [HttpPost("register")]
+        public async Task<ActionResult<AuthResponseDto>> Register([FromBody] RegisterRequestDto dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _authService.RegisterAsync(dto);
+            return Ok(result); // returns token (auto-login)
+        }
+
     }
 }
