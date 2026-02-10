@@ -7,7 +7,7 @@ namespace ActivityClub.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize] // all endpoints require authentication
+    [Authorize] //authentication required
     public class RolesController : ControllerBase
     {
         private readonly IRoleService _roleService;

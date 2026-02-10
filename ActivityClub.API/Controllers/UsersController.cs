@@ -3,6 +3,8 @@ using ActivityClub.Contracts.DTOs.Users;
 using ActivityClub.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace ActivityClub.API.Controllers
 {
@@ -23,6 +25,7 @@ namespace ActivityClub.API.Controllers
         // ----------------------------
 
         // GET: api/users  (authenticated)
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserResponseDto>>> GetUsers()
         {
@@ -31,6 +34,7 @@ namespace ActivityClub.API.Controllers
         }
 
         // GET: api/users/5  (authenticated)
+        [Authorize(Roles = "Admin")]
         [HttpGet("{id:int}")]
         public async Task<ActionResult<UserResponseDto>> GetUser(int id)
         {
@@ -83,6 +87,7 @@ namespace ActivityClub.API.Controllers
         // ----------------------------
 
         // GET: api/users/5/roles  (authenticated)
+        [Authorize(Roles = "Admin")]
         [HttpGet("{id:int}/roles")]
         public async Task<ActionResult<IEnumerable<RoleResponseDto>>> GetUserRoles(int id)
         {
@@ -111,9 +116,9 @@ namespace ActivityClub.API.Controllers
             return NoContent();
         }
 
-        // --------------------------------------
-        // Updating Email and Password endpoints
-        // --------------------------------------
+        // -----------------------------------------------------
+        // Updating Email and Password endpoints for Admin only
+        // -----------------------------------------------------
 
         // PUT: api/users/5/email  (ADMIN only — for now)
         [Authorize(Roles = "Admin")]
@@ -134,6 +139,79 @@ namespace ActivityClub.API.Controllers
             if (!ok) return NotFound();
             return NoContent();
         }
+
+
+        // ----------------------------
+        // /me endpoints (self-service)
+        // ----------------------------
+
+        // GET: api/users/me
+        [HttpGet("me")]
+        public async Task<ActionResult<UserResponseDto>> GetMe()
+        {
+            var myId = GetCurrentUserId();
+            if (myId is null) return Unauthorized();
+
+            var me = await _userService.GetByIdAsync(myId.Value);
+            if (me is null) return NotFound();
+
+            return Ok(me);
+        }
+
+        // GET: api/users/me/roles
+        [HttpGet("me/roles")]
+        public async Task<ActionResult<IEnumerable<RoleResponseDto>>> GetMyRoles()
+        {
+            var myId = GetCurrentUserId();
+            if (myId is null) return Unauthorized();
+
+            var roles = await _userService.GetRolesAsync(myId.Value);
+            if (roles is null) return NotFound();
+
+            return Ok(roles);
+        }
+
+        // PUT: api/users/me/email
+        [HttpPut("me/email")]
+        public async Task<IActionResult> UpdateMyEmail([FromBody] UpdateUserEmailDto dto)
+        {
+            var myId = GetCurrentUserId();
+            if (myId is null) return Unauthorized();
+
+            var ok = await _userService.UpdateEmailAsync(myId.Value, dto);
+            if (!ok) return NotFound();
+
+            return NoContent();
+        }
+
+        // PUT: api/users/me/password
+        [HttpPut("me/password")]
+        public async Task<IActionResult> ChangeMyPassword([FromBody] ChangePasswordDto dto)
+        {
+            var myId = GetCurrentUserId();
+            if (myId is null) return Unauthorized();
+
+            var ok = await _userService.ChangePasswordAsync(myId.Value, dto);
+            if (!ok) return NotFound();
+
+            return NoContent();
+        }
+
+
+        // --------------------
+        // Helper Methods
+        // --------------------
+        private int? GetCurrentUserId()
+        {
+            // We stored userId in JWT "sub"
+            var sub = User.FindFirstValue(JwtRegisteredClaimNames.Sub);
+
+            // fallback (sometimes people use NameIdentifier)
+            sub ??= User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            return int.TryParse(sub, out var id) ? id : null;
+        }
+
 
     }
 }
