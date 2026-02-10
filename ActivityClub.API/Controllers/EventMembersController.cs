@@ -7,7 +7,7 @@ namespace ActivityClub.API.Controllers
 {
     [ApiController]
     [Route("api/events/{eventId:int}/members")]
-    [Authorize] // JWT required by default
+    [Authorize(Roles = "Admin")] // Admin-only for all endpoints (authenticated and authorized at the same time)
     public class EventMembersController : ControllerBase
     {
         private readonly IEventMemberService _eventMemberService;
@@ -29,7 +29,6 @@ namespace ActivityClub.API.Controllers
         }
 
         // POST: /api/events/{eventId}/members/{memberId}  (ADMIN only)
-        [Authorize(Roles = "Admin")]
         [HttpPost("{memberId:int}")]
         public async Task<IActionResult> AssignMemberToEvent([FromRoute] int eventId, [FromRoute] int memberId)
         {
@@ -40,7 +39,6 @@ namespace ActivityClub.API.Controllers
         }
 
         // DELETE: /api/events/{eventId}/members/{memberId}  (ADMIN only)
-        [Authorize(Roles = "Admin")]
         [HttpDelete("{memberId:int}")]
         public async Task<IActionResult> UnassignMemberFromEvent([FromRoute] int eventId, [FromRoute] int memberId)
         {

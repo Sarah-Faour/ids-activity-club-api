@@ -18,6 +18,7 @@ namespace ActivityClub.API.Controllers
         }
 
         // GET: api/Members  (authenticated)
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MemberResponseDto>>> GetMembers()
         {
@@ -26,6 +27,7 @@ namespace ActivityClub.API.Controllers
         }
 
         // GET: api/Members/5  (authenticated)
+        [Authorize(Roles = "Admin")]
         [HttpGet("{id:int}")]
         public async Task<ActionResult<MemberResponseDto>> GetMember(int id)
         {

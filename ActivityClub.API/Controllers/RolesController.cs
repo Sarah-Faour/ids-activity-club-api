@@ -7,7 +7,6 @@ namespace ActivityClub.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize] //authentication required
     public class RolesController : ControllerBase
     {
         private readonly IRoleService _roleService;
@@ -19,6 +18,7 @@ namespace ActivityClub.API.Controllers
 
         // GET: api/roles
         // Read-only roles list (roles are fixed; no CRUD)
+        [AllowAnonymous] //Keeping them public avoids annoying “login required just to load static reference data(public data forever) in dropdown lists later in frontened
         [HttpGet]
         public async Task<ActionResult<IEnumerable<RoleResponseDto>>> GetRoles()
         {
@@ -27,6 +27,7 @@ namespace ActivityClub.API.Controllers
         }
 
         // GET: api/roles/5
+        [AllowAnonymous]
         [HttpGet("{id:int}")]
         public async Task<ActionResult<RoleResponseDto>> GetRole(int id)
         {

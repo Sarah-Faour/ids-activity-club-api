@@ -7,7 +7,6 @@ namespace ActivityClub.API.Controllers
 {
     [ApiController]
     [Route("api/events/{eventId:int}/guides")]
-    [Authorize] // JWT required by default
     public class EventGuidesController : ControllerBase
     {
         private readonly IEventGuideService _service;
@@ -18,6 +17,7 @@ namespace ActivityClub.API.Controllers
         }
 
         // GET: /api/events/{eventId}/guides  (authenticated)
+        [AllowAnonymous] //anyone can view the guides of a specific event(public read, admin-only write)
         [HttpGet]
         public async Task<ActionResult<IEnumerable<EventGuideResponseDto>>> GetGuidesForEvent([FromRoute] int eventId)
         {

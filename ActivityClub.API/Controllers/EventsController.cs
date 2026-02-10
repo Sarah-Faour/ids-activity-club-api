@@ -7,7 +7,6 @@ namespace ActivityClub.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize] // JWT required by default
     public class EventsController : ControllerBase
     {
         private readonly IEventService _eventService;
@@ -18,6 +17,7 @@ namespace ActivityClub.API.Controllers
         }
 
         // GET: api/events (authenticated)
+        [AllowAnonymous] //no authentication (log in) is needed to browse Events
         [HttpGet]
         public async Task<ActionResult<IEnumerable<EventResponseDto>>> GetEvents()
         {
@@ -26,6 +26,7 @@ namespace ActivityClub.API.Controllers
         }
 
         // GET: api/events/5 (authenticated)
+        [AllowAnonymous] 
         [HttpGet("{id:int}")]
         public async Task<ActionResult<EventResponseDto>> GetEvent(int id)
         {

@@ -18,6 +18,7 @@ namespace ActivityClub.API.Controllers
         }
 
         // GET: api/guides (authenticated)
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<GuideResponseDto>>> GetGuides()
         {
@@ -26,6 +27,7 @@ namespace ActivityClub.API.Controllers
         }
 
         // GET: api/guides/5 (authenticated)
+        [Authorize(Roles = "Admin")]
         [HttpGet("{id:int}")]
         public async Task<ActionResult<GuideResponseDto>> GetGuide(int id)
         {
