@@ -8,4 +8,5 @@
   <Project Path="ActivityClub.Data/ActivityClub.Data.csproj" />
   <Project Path="ActivityClub.Repositories/ActivityClub.Repositories.csproj" Id="98302fb3-d886-484e-a3c8-855681935af8" />
   <Project Path="ActivityClub.Services/ActivityClub.Services.csproj" Id="5da6f516-5d7b-49fc-8d31-934f93f3706a" />
+  <Project Path="ActivityClub.Web/ActivityClub.Web.csproj" Id="b7355e7c-6948-4b26-a767-72fe04513f7e" />
 </Solution>
