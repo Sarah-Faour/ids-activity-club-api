@@ -55,6 +55,8 @@ namespace ActivityClub.API
                 };
             });
 
+            
+            builder.Services.AddAuthorization();
 
 
             //AutoMapper
@@ -114,7 +116,7 @@ namespace ActivityClub.API
             builder.Services.AddScoped<IEventGuideService, EventGuideService>();
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
-            builder.Services.AddAuthorization();
+            
 
 
 
