@@ -71,7 +71,7 @@ Layered Architecture
 
 ---
 
-# Authentication & Security
+## Authentication & Security
 
 The API uses JWT-based authentication with:
 
@@ -90,7 +90,7 @@ Security configuration includes:
 
 ---
 
-# Authorization Model
+## Authorization Model
 
 The system implements:
 
@@ -105,7 +105,7 @@ The system implements:
 
 ---
 
-# Password Security
+## Password Security
 
 - All passwords are hashed using IPasswordHasher<User> (ASP.NET Core Identity standard).
 - No plaintext passwords stored.
@@ -114,7 +114,7 @@ The system implements:
 
 ---
 
-# Registration Flow
+## Registration Flow
 
 The API supports:
 
@@ -134,7 +134,7 @@ Registration:
 
 ---
 
-# Global Exception Handling
+## Global Exception Handling
 
 A custom middleware ensures:
 
@@ -144,7 +144,7 @@ A custom middleware ensures:
 
 ---
 
-# API Security Rules (Current State)
+## API Security Rules (Current State)
 
 | Area                    | Access             |
 | ----------------------- | ------------------ |
@@ -179,7 +179,7 @@ A custom middleware ensures:
 
 ---
 
-# Design Principles Applied
+## Design Principles Applied
 
 - Secure by default
 - Explicit public endpoints
