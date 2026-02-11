@@ -19,6 +19,8 @@ namespace ActivityClub.Services.Implementations
         private readonly IGenericRepository<User> _userRepo;
         private readonly IGenericRepository<Role> _roleRepo;
         private readonly IGenericRepository<Lookup> _lookupRepo;
+        private readonly IGenericRepository<Member> _memberRepo;
+        private readonly ActivityClubDbContext _db; // for transaction
         private readonly IConfiguration _config;
         private readonly IPasswordHasher<User> _passwordHasher;
 
@@ -26,12 +28,16 @@ namespace ActivityClub.Services.Implementations
             IGenericRepository<User> userRepo,
             IGenericRepository<Role> roleRepo,
             IGenericRepository<Lookup> lookupRepo,
+            IGenericRepository<Member> memberRepo,
+            ActivityClubDbContext db,
             IConfiguration config,
             IPasswordHasher<User> passwordHasher)
         {
             _userRepo = userRepo;
             _roleRepo = roleRepo;
             _lookupRepo = lookupRepo;
+            _memberRepo = memberRepo;
+            _db = db;
             _config = config;
             _passwordHasher = passwordHasher;
         }
@@ -92,6 +98,9 @@ namespace ActivityClub.Services.Implementations
 
         public async Task<AuthResponseDto> RegisterAsync(RegisterRequestDto dto)
         {
+            // Transaction = all-or-nothing because we are holding multiple aggregates at the same time
+            await using var tx = await _db.Database.BeginTransactionAsync();
+
             // 1) Email unique (case-insensitive)
             var emailKey = dto.Email.Trim().ToUpper();
             var emailExists = await _userRepo.Query()
@@ -134,9 +143,23 @@ namespace ActivityClub.Services.Implementations
             user.Roles.Add(memberRole);
 
             await _userRepo.AddAsync(user);
-            await _userRepo.SaveChangesAsync();
+            await _userRepo.SaveChangesAsync(); // ensures user.UserId exists
 
-            // 5) Generate token with roles
+            // 5) Create Member profile (Option A)
+            var member = new Member
+            {
+                UserId = user.UserId,
+                FullName = user.Name, // default = user's name
+                JoiningDate = DateOnly.FromDateTime(DateTime.UtcNow),
+                IsActive = true
+            };
+
+            await _memberRepo.AddAsync(member);
+            await _memberRepo.SaveChangesAsync();
+
+            await tx.CommitAsync();
+
+            // 6) Generate token with roles
             // If EF didn’t load roles (depends on tracking), ensure role exists in memory already.
             var (token, expiresAtUtc) = GenerateJwt(user);
 
@@ -163,9 +186,9 @@ namespace ActivityClub.Services.Implementations
 
             var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.UserId.ToString()),
+                new Claim(JwtRegisteredClaimNames.Sub, user.UserId.ToString()), //standard claim
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim("name", user.Name)
+                new Claim("name", user.Name) //custom cliam
             };
 
             foreach (var role in user.Roles)
