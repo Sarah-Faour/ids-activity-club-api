@@ -6,4 +6,13 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="ViewModels\Auth\" />
+    <Folder Include="ViewModels\Events\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ActivityClub.Contracts\ActivityClub.Contracts.csproj" />
+  </ItemGroup>
+
 </Project>

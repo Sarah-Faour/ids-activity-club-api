@@ -1,3 +1,6 @@
+using ActivityClub.Web.Services.Implementations;
+using ActivityClub.Web.Services.Interfaces;
+
 namespace ActivityClub.Web
 {
     public class Program
@@ -19,7 +22,10 @@ namespace ActivityClub.Web
                 client.BaseAddress = new Uri(apiSettings!.BaseUrl);
             });
 
+
             // Add services to the container.
+            builder.Services.AddScoped<IEventApiClient, EventApiClient>();
+
             builder.Services.AddControllersWithViews();
 
             var app = builder.Build();
