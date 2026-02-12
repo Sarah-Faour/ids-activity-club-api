@@ -6,6 +6,19 @@ namespace ActivityClub.Web
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            //Register ApiSettings + HttpClientFactory
+            builder.Services.Configure<ActivityClub.Web.Configurations.ApiSettings>(
+                builder.Configuration.GetSection("ApiSettings"));
+
+            var apiSettings = builder.Configuration
+                .GetSection("ApiSettings")
+                .Get<ActivityClub.Web.Configurations.ApiSettings>();
+
+            builder.Services.AddHttpClient("ActivityClubApi", client =>
+            {
+                client.BaseAddress = new Uri(apiSettings!.BaseUrl);
+            });
+
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
