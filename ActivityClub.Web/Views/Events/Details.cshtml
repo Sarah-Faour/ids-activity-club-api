@@ -1,0 +1,39 @@
+﻿@model ActivityClub.Web.ViewModels.Events.EventDetailsVm
+
+@{
+    ViewData["Title"] = "Event Details";
+}
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">@Model.Name</h3>
+        <div class="card-tools">
+            <a class="btn btn-sm btn-secondary" asp-controller="Events" asp-action="Index">Back</a>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3">Description</dt>
+            <dd class="col-sm-9">@Model.Description</dd>
+
+            <dt class="col-sm-3">Destination</dt>
+            <dd class="col-sm-9">@Model.Destination</dd>
+
+            <dt class="col-sm-3">Date From</dt>
+            <dd class="col-sm-9">@Model.DateFromText</dd>
+
+            <dt class="col-sm-3">Date To</dt>
+            <dd class="col-sm-9">@Model.DateToText</dd>
+
+            <dt class="col-sm-3">Cost</dt>
+            <dd class="col-sm-9">@Model.Cost</dd>
+
+            <dt class="col-sm-3">Category</dt>
+            <dd class="col-sm-9">@Model.CategoryName</dd>
+
+            <dt class="col-sm-3">Status</dt>
+            <dd class="col-sm-9">@Model.StatusName</dd>
+        </dl>
+    </div>
+</div>

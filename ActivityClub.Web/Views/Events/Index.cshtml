@@ -1,0 +1,58 @@
+﻿@model IReadOnlyList<ActivityClub.Web.ViewModels.Events.EventListItemVm>
+
+@{
+    ViewData["Title"] = "Events";
+}
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Events</h3>
+    </div>
+
+    <div class="card-body p-0">
+        @if (Model == null || Model.Count == 0)
+        {
+            <div class="p-3"><em>No events found.</em></div>
+        }
+        else
+        {
+            <table class="table table-striped mb-0">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Destination</th>
+                        <th>Date From</th>
+                        <th>Date To</th>
+                        <th>Cost</th>
+                        <th>Category</th>
+                        <th>Status</th>
+                        <th style="width:120px;"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var e in Model)
+                    {
+                        <tr>
+                            <td>@e.Name</td>
+                            <td>@e.Destination</td>
+                            <td>@e.DateFromText</td>
+                            <td>@e.DateToText</td>
+                            <td>@e.Cost</td>
+                            <td>@e.CategoryName</td>
+                            <td>@e.StatusName</td>
+                            <td class="text-right">
+                                <a class="btn btn-sm btn-primary"
+                                   asp-controller="Events"
+                                   asp-action="Details"
+                                   asp-route-id="@e.EventId">
+                                    Details
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+

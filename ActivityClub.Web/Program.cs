@@ -25,6 +25,8 @@ namespace ActivityClub.Web
 
             // Add services to the container.
             builder.Services.AddScoped<IEventApiClient, EventApiClient>();
+            builder.Services.AddScoped<IEventsUiService, EventsUiService>();
+
 
             builder.Services.AddControllersWithViews();
 

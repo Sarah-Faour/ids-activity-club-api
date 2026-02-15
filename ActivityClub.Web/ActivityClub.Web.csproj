@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <Folder Include="ViewModels\Auth\" />
-    <Folder Include="ViewModels\Events\" />
     <Folder Include="wwwroot\adminlte\" />
   </ItemGroup>
 
