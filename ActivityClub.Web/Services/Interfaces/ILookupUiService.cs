@@ -1,0 +1,9 @@
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+
+namespace ActivityClub.Web.Services.Interfaces
+{
+    public interface ILookupUiService
+    {
+        Task<IReadOnlyList<SelectListItem>> GetGenderOptionsAsync(CancellationToken ct = default);
+    }
+}

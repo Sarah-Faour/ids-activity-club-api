@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="ViewModels\Auth\" />
     <Folder Include="wwwroot\adminlte\" />
   </ItemGroup>
 

@@ -23,9 +23,14 @@ namespace ActivityClub.Web
             });
 
 
-            // Add services to the container.
+            // Api clients
             builder.Services.AddScoped<IEventApiClient, EventApiClient>();
+            builder.Services.AddScoped<IAuthApiClient, AuthApiClient>();
+            builder.Services.AddScoped<ILookupApiClient, LookupApiClient>();
+            // UI services
             builder.Services.AddScoped<IEventsUiService, EventsUiService>();
+            builder.Services.AddScoped<ILookupUiService, LookupUiService>();
+            builder.Services.AddScoped<IAuthUiService, AuthUiService>();
 
 
             builder.Services.AddControllersWithViews();
@@ -41,8 +46,10 @@ namespace ActivityClub.Web
             }
 
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
             app.UseRouting();
-
+            
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapStaticAssets();
