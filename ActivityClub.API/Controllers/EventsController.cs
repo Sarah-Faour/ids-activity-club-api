@@ -2,6 +2,8 @@
 using ActivityClub.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace ActivityClub.API.Controllers
 {
@@ -10,10 +12,12 @@ namespace ActivityClub.API.Controllers
     public class EventsController : ControllerBase
     {
         private readonly IEventService _eventService;
+        private readonly IEventMemberService _eventMemberService;
 
-        public EventsController(IEventService eventService)
+        public EventsController(IEventService eventService, IEventMemberService eventMemberService)
         {
             _eventService = eventService;
+            _eventMemberService = eventMemberService;
         }
 
         // GET: api/events (authenticated)
@@ -62,6 +66,26 @@ namespace ActivityClub.API.Controllers
             var deleted = await _eventService.SoftDeleteAsync(id);
             if (!deleted) return NotFound();
             return NoContent();
+        }
+
+        // POST: api/events/5/join  (authenticated member joins himself)
+        [Authorize]
+        [HttpPost("{id:int}/join")]
+        public async Task<IActionResult> JoinEvent(int id)
+        {
+            var userId = GetCurrentUserId();
+            if (userId is null) return Unauthorized();
+
+            await _eventMemberService.JoinEventAsync(id, userId.Value);
+            return NoContent(); // 204 (simple success)
+        }
+
+        private int? GetCurrentUserId()
+        {
+            var sub = User.FindFirstValue(JwtRegisteredClaimNames.Sub);
+            sub ??= User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            return int.TryParse(sub, out var parsed) ? parsed : null;
         }
     }
 }

@@ -96,5 +96,51 @@ namespace ActivityClub.Services.Implementations
             await _eventMemberRepo.SaveChangesAsync();
             return true;
         }
+
+        public async Task JoinEventAsync(int eventId, int userId)
+        {
+            // 1) Load event (must exist + active)
+            var ev = await _eventRepo.Query()
+                .Where(e => e.EventId == eventId && e.IsActive)
+                .Select(e => new { e.EventId, e.DateFrom })
+                .FirstOrDefaultAsync();
+
+            if (ev is null)
+                throw new ArgumentException("Event not found or inactive.");
+
+            // 2) Prevent joining past events (API enforcement)
+            var todayUtc = DateOnly.FromDateTime(DateTime.UtcNow);
+            if (ev.DateFrom < todayUtc)
+                throw new InvalidOperationException("You cannot join a past event.");
+
+            // 3) Get MemberId for this logged-in user
+            // IMPORTANT: this assumes Member has a UserId FK property.
+            // If your Member model uses another name, replace m.UserId accordingly.
+            var memberId = await _memberRepo.Query()
+                .Where(m => m.UserId == userId && m.IsActive && m.User.IsActive)
+                .Select(m => m.MemberId)
+                .FirstOrDefaultAsync();
+
+            if (memberId == 0)
+                throw new ArgumentException("You are not an active member.");
+
+            // 4) Prevent duplicates
+            var alreadyAssigned = await _eventMemberRepo.Query()
+                .AnyAsync(em => em.EventId == eventId && em.MemberId == memberId);
+
+            if (alreadyAssigned)
+                throw new InvalidOperationException("You already joined this event.");
+
+            // 5) Create join link
+            var link = new EventMember
+            {
+                EventId = eventId,
+                MemberId = memberId,
+                JoinDate = DateOnly.FromDateTime(DateTime.UtcNow)
+            };
+
+            await _eventMemberRepo.AddAsync(link);
+            await _eventMemberRepo.SaveChangesAsync();
+        }
     }
 }

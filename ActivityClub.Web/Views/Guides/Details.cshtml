@@ -1,0 +1,36 @@
+﻿@model ActivityClub.Web.ViewModels.Guides.GuideDetailsVm
+
+<h2>Guide Details</h2>
+
+<div class="card">
+    <div class="card-body">
+
+        <div class="mb-3">
+            @if (!string.IsNullOrWhiteSpace(Model.Photo))
+            {
+                <img src="@Model.Photo" alt="Guide Photo" style="height:100px;width:100px;object-fit:cover;border-radius:50%;" />
+            }
+            else
+            {
+                <span>-</span>
+            }
+        </div>
+        <p><strong>Full Name:</strong> @Model.FullName</p>
+        <p><strong>Profession:</strong> @(string.IsNullOrWhiteSpace(Model.ProfessionName) ? "-" : Model.ProfessionName)</p>
+        <p><strong>Joining Date:</strong> @Model.JoiningDateText</p>
+
+        <p>
+            <strong>Status:</strong>
+            @if (Model.IsActive)
+            {
+                <span class="badge bg-success">Active</span>
+            }
+            else
+            {
+                <span class="badge bg-secondary">Inactive</span>
+            }
+        </p>
+
+        <a class="btn btn-secondary" href="@Url.Action("Index", "Guides")">Back</a>
+    </div>
+</div>

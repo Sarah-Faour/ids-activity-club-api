@@ -1,0 +1,34 @@
+﻿@model List<ActivityClub.Web.ViewModels.Guides.GuideListItemVm>
+
+<h2>Guides</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Full Name</th>
+            <th>Profession</th>
+            <th>Joining Date</th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var g in Model)
+        {
+            <tr>
+                <td>@g.FullName</td>
+
+                <td>@(string.IsNullOrWhiteSpace(g.ProfessionName) ? "-" : g.ProfessionName)</td>
+
+                <td>@g.JoiningDateText</td>
+
+                <td>
+                    <a class="btn btn-sm btn-primary"
+                       href="@Url.Action("Details", "Guides", new { id = g.GuideId })">
+                        Details
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
