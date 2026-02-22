@@ -7,7 +7,7 @@ namespace ActivityClub.Web.Controllers
     public class HomeController : Controller
     {
         public IActionResult Index()
-        {
+        { 
             return View();
         }
 
@@ -21,6 +21,7 @@ namespace ActivityClub.Web.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
     }
 }
 

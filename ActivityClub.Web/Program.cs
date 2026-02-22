@@ -1,5 +1,7 @@
 using ActivityClub.Web.Services.Implementations;
 using ActivityClub.Web.Services.Interfaces;
+using ActivityClub.Web.Handlers;
+using Microsoft.AspNetCore.Authentication;
 
 namespace ActivityClub.Web
 {
@@ -8,6 +10,23 @@ namespace ActivityClub.Web
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            // Needed so JwtForwardingHandler can read the current request cookie
+            builder.Services.AddHttpContextAccessor();
+
+            // Register the outgoing request handler (adds Authorization: Bearer <token> (authorization header) )
+            builder.Services.AddTransient<JwtForwardingHandler>();
+
+            // Register MVC authentication scheme that reads JWT from cookie and builds HttpContext.User
+            builder.Services
+                .AddAuthentication(options =>
+                {
+                    options.DefaultAuthenticateScheme = "JwtCookie";
+                    options.DefaultChallengeScheme = "JwtCookie";
+                })
+                .AddScheme<AuthenticationSchemeOptions, JwtCookieAuthenticationHandler>("JwtCookie", _ => { });
+
+            builder.Services.AddAuthorization(); //Enables [Authorize] and role-based authorization in MVC
 
             //Register ApiSettings + HttpClientFactory
             builder.Services.Configure<ActivityClub.Web.Configurations.ApiSettings>(
@@ -20,7 +39,8 @@ namespace ActivityClub.Web
             builder.Services.AddHttpClient("ActivityClubApi", client =>
             {
                 client.BaseAddress = new Uri(apiSettings!.BaseUrl);
-            });
+            })
+            .AddHttpMessageHandler<JwtForwardingHandler>(); //automatically attaches Authorization: Bearer <token> from cookie
 
 
             // Api clients
