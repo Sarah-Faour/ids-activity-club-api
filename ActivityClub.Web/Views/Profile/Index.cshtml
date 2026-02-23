@@ -1,0 +1,19 @@
+﻿@model ActivityClub.Web.ViewModels.Profile.ProfileVm
+
+<h2>My Profile</h2>
+
+<div class="card">
+    <div class="card-body">
+        <p><strong>Name:</strong> @Model.Name</p>
+        <p><strong>Email:</strong> @Model.Email</p>
+        <p><strong>Date of Birth:</strong> @Model.DateOfBirthText</p>
+        <p><strong>Gender:</strong> @Model.GenderName</p>
+        <p><strong>Account Status:</strong> @(Model.IsActive ? "Active" : "Inactive")</p>
+        <p><strong>Created At:</strong> @Model.CreatedAtText</p>
+
+        <p><strong>Roles:</strong> @(Model.Roles.Count == 0 ? "-" : string.Join(", ", Model.Roles))</p>
+
+        <a class="btn btn-primary" href="@Url.Action("EditEmail")">Update Email</a>
+        <a class="btn btn-warning" href="@Url.Action("ChangePassword")">Change Password</a>
+    </div>
+</div>

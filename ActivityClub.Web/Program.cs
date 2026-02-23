@@ -47,10 +47,14 @@ namespace ActivityClub.Web
             builder.Services.AddScoped<IEventApiClient, EventApiClient>();
             builder.Services.AddScoped<IAuthApiClient, AuthApiClient>();
             builder.Services.AddScoped<ILookupApiClient, LookupApiClient>();
+            builder.Services.AddScoped<IGuideApiClient, GuideApiClient>();
+            builder.Services.AddScoped<IProfileApiClient, ProfileApiClient>();
             // UI services
             builder.Services.AddScoped<IEventsUiService, EventsUiService>();
             builder.Services.AddScoped<ILookupUiService, LookupUiService>();
             builder.Services.AddScoped<IAuthUiService, AuthUiService>();
+            builder.Services.AddScoped<IGuidesUiService, GuidesUiService>();
+            builder.Services.AddScoped<IProfileUiService, ProfileUiService>();
 
 
             builder.Services.AddControllersWithViews();
