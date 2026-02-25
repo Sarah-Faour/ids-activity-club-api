@@ -1,0 +1,38 @@
+﻿@model ActivityClub.Web.ViewModels.MemberProfile.MemberProfileVm
+
+<h2>My Member Profile</h2>
+
+<div class="card">
+    <div class="card-body">
+        <p><strong>Full Name:</strong> @Model.FullName</p>
+        <p><strong>Mobile:</strong> @(string.IsNullOrWhiteSpace(Model.MobileNumber) ? "-" : Model.MobileNumber)</p>
+        <p><strong>Emergency:</strong> @(string.IsNullOrWhiteSpace(Model.EmergencyNumber) ? "-" : Model.EmergencyNumber)</p>
+        <p><strong>Joining Date:</strong> @Model.JoiningDateText</p>
+        <p><strong>Profession:</strong> @(string.IsNullOrWhiteSpace(Model.ProfessionName) ? "-" : Model.ProfessionName)</p>
+        <p><strong>Nationality:</strong> @(string.IsNullOrWhiteSpace(Model.NationalityName) ? "-" : Model.NationalityName)</p>
+
+        @if (!string.IsNullOrWhiteSpace(Model.Photo))
+        {
+            <p><strong>Photo:</strong></p>
+            <img src="@Model.Photo" alt="Member photo" class="img-fluid rounded" style="max-width:200px;" />
+        }
+        else
+        {
+           <p><strong>Photo:</strong> - </p>
+        }
+
+        <p>
+            <strong>Status:</strong>
+            @if (Model.IsActive)
+            {
+                <span class="badge bg-success">Active</span>
+            }
+            else
+            {
+                <span class="badge bg-secondary">Inactive</span>
+            }
+        </p>
+
+        <a class="btn btn-primary" asp-action="Edit">Edit Member Profile</a>
+    </div>
+</div>

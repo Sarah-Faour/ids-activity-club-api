@@ -176,6 +176,54 @@ namespace ActivityClub.Services.Implementations
             await _memberRepo.SaveChangesAsync();
             return true;
         }
+
+        // ----------------------------
+        // Self-Service
+        // ----------------------------
+        public async Task<MemberResponseDto?> GetMyProfileAsync(int userId)
+        {
+            return await _memberRepo.Query()
+                .Where(m => m.UserId == userId && m.IsActive && m.User.IsActive)
+                .ProjectTo<MemberResponseDto>(_mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<bool> UpdateMyProfileAsync(int userId, UpdateMemberDto dto)
+        {
+            var member = await _memberRepo.Query()
+                .FirstOrDefaultAsync(m => m.UserId == userId && m.IsActive && m.User.IsActive);
+
+            if (member is null)
+                return false;
+
+            // validate optional lookup ids
+            if (dto.ProfessionId.HasValue)
+            {
+                var profExists = await _lookupRepo.Query()
+                   .AnyAsync(l => l.LookupId == dto.ProfessionId.Value
+                                  && l.Code == LookupCodes.Profession
+                                  && l.IsActive);
+
+                if (!profExists)
+                    throw new ArgumentException("Invalid ProfessionId (must be an active profession lookup).");
+            }
+
+            if (dto.NationalityId.HasValue)
+            {
+                var natExists = await _lookupRepo.Query()
+                    .AnyAsync(l => l.LookupId == dto.NationalityId.Value
+                                   && l.Code == LookupCodes.Nationality
+                                   && l.IsActive);
+
+                if (!natExists)
+                    throw new ArgumentException("Invalid NationalityId (must be an active nationality lookup).");
+            }
+
+            _mapper.Map(dto, member);
+
+            await _memberRepo.SaveChangesAsync();
+            return true;
+        }
     }
 }
 

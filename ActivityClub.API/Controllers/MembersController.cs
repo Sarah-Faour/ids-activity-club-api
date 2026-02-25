@@ -2,6 +2,8 @@
 using ActivityClub.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace ActivityClub.API.Controllers
 {
@@ -78,6 +80,47 @@ namespace ActivityClub.API.Controllers
             return NoContent(); // 204
         }
 
+
+        // ----------------------------
+        // /me endpoints (self-service)
+        // ----------------------------
+
+        // GET: api/members/me
+        [HttpGet("me")]
+        public async Task<ActionResult<MemberResponseDto>> GetMyMemberProfile()
+        {
+            var myId = GetCurrentUserId();
+            if (myId is null) return Unauthorized();
+
+            var me = await _memberService.GetMyProfileAsync(myId.Value);
+            if (me is null) return NotFound(new { message = "Member profile not found or inactive." });
+
+            return Ok(me);
+        }
+
+        // PUT: api/members/me
+        [HttpPut("me")]
+        public async Task<IActionResult> UpdateMyMemberProfile([FromBody] UpdateMemberDto dto)
+        {
+            var myId = GetCurrentUserId();
+            if (myId is null) return Unauthorized();
+
+            var ok = await _memberService.UpdateMyProfileAsync(myId.Value, dto);
+            if (!ok) return NotFound(new { message = "Member profile not found or inactive." });
+
+            return NoContent();
+        }
+
+        // --------------------
+        // Helper Methods
+        // --------------------
+        private int? GetCurrentUserId()
+        {
+            var sub = User.FindFirstValue(JwtRegisteredClaimNames.Sub);
+            sub ??= User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            return int.TryParse(sub, out var id) ? id : null;
+        }
 
 
     }

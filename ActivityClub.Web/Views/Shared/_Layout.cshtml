@@ -51,13 +51,21 @@
                     </li>
                 }
                 else
-                { 
-                    <!-- Profil link -->
+                {
+                    @* Member-only quick link *@
+                    @if (User.IsInRole("Member"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="MemberProfile" asp-action="Index">Member Profile</a>
+                        </li>
+                    }
+
+                    @* User profile (for any authenticated user) *@
                     <li class="nav-item">
                         <a class="nav-link" asp-controller="Profile" asp-action="Index">My Profile</a>
                     </li>
-                    
-                    <!-- Logout button  -->
+
+                    @* Logout *@
                     <li class="nav-item">
                         <form asp-controller="Auth" asp-action="Logout" method="post" class="d-inline">
                             @Html.AntiForgeryToken()
@@ -95,6 +103,15 @@
                                 <p>Guides</p>
                             </a>
                         </li>
+                        @if (isSignedIn && User.IsInRole("Member"))
+                        {
+                            <li class="nav-item">
+                                <a asp-controller="MemberProfile" asp-action="Index" class="nav-link">
+                                    <i class="nav-icon fas fa-user"></i>
+                                    <p>Member Profile</p>
+                                </a>
+                            </li>
+                        }
                     </ul>
                 </nav>
             </div>
