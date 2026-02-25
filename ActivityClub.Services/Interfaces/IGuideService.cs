@@ -9,5 +9,9 @@ namespace ActivityClub.Services.Interfaces
         Task<GuideResponseDto> CreateAsync(CreateGuideDto dto);
         Task<bool> UpdateAsync(int id, UpdateGuideDto dto);
         Task<bool> SoftDeleteAsync(int id);
+
+        // ✅ Self-service
+        Task<GuideResponseDto?> GetMyProfileAsync(int userId);
+        Task<bool> UpdateMyProfileAsync(int userId, UpdateGuideDto dto);
     }
 }

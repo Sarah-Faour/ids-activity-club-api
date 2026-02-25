@@ -68,6 +68,11 @@ namespace ActivityClub.API.Controllers
             return NoContent();
         }
 
+
+        // --------------------------------------
+        // authenticated member joining himself
+        // --------------------------------------
+
         // POST: api/events/5/join  (authenticated member joins himself)
         [Authorize]
         [HttpPost("{id:int}/join")]

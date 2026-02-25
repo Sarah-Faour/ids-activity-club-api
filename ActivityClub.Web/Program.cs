@@ -50,6 +50,7 @@ namespace ActivityClub.Web
             builder.Services.AddScoped<IGuideApiClient, GuideApiClient>();
             builder.Services.AddScoped<IProfileApiClient, ProfileApiClient>();
             builder.Services.AddScoped<IMemberProfileApiClient, MemberProfileApiClient>();
+            builder.Services.AddScoped<IGuideProfileApiClient, GuideProfileApiClient>();
             // UI services
             builder.Services.AddScoped<IEventsUiService, EventsUiService>();
             builder.Services.AddScoped<ILookupUiService, LookupUiService>();
@@ -57,6 +58,7 @@ namespace ActivityClub.Web
             builder.Services.AddScoped<IGuidesUiService, GuidesUiService>();
             builder.Services.AddScoped<IProfileUiService, ProfileUiService>();
             builder.Services.AddScoped<IMemberProfileUiService, MemberProfileUiService>();
+            builder.Services.AddScoped<IGuideProfileUiService, GuideProfileUiService>();
 
 
             builder.Services.AddControllersWithViews();

@@ -1,0 +1,39 @@
+﻿@model ActivityClub.Web.ViewModels.GuideProfile.GuideProfileVm
+@{
+    ViewData["Title"] = "Guide Profile";
+}
+
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-3">
+                <img src="@(string.IsNullOrWhiteSpace(Model.Photo) ? "/img/default-user.png" : Model.Photo)"
+                     class="img-fluid img-circle"
+                     alt="Guide Photo" />
+            </div>
+
+            <div class="col-md-9">
+                <h3 class="mb-2">@Model.FullName</h3>
+
+                <p class="mb-1"><strong>Joining Date:</strong> @Model.JoiningDateText</p>
+                <p class="mb-1"><strong>Profession:</strong> @(Model.ProfessionName ?? "-")</p>
+
+                <p class="mb-3">
+                    <strong>Status:</strong>
+                    @if (Model.IsActive)
+                    {
+                        <span class="badge badge-success">Active</span>
+                    }
+                    else
+                    {
+                        <span class="badge badge-secondary">Inactive</span>
+                    }
+                </p>
+
+                <a asp-action="Edit" class="btn btn-primary">
+                    <i class="fas fa-edit"></i> Edit
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -59,6 +59,13 @@
                             <a class="nav-link" asp-controller="MemberProfile" asp-action="Index">Member Profile</a>
                         </li>
                     }
+                    
+                    @if (User.IsInRole("Guide"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="GuideProfile" asp-action="Index">Guide Profile</a>
+                        </li>
+                    }
 
                     @* User profile (for any authenticated user) *@
                     <li class="nav-item">
@@ -109,6 +116,15 @@
                                 <a asp-controller="MemberProfile" asp-action="Index" class="nav-link">
                                     <i class="nav-icon fas fa-user"></i>
                                     <p>Member Profile</p>
+                                </a>
+                            </li>
+                        }
+                        @if (isSignedIn && User.IsInRole("Guide"))
+                        {
+                            <li class="nav-item">
+                                <a asp-controller="GuideProfile" asp-action="Index" class="nav-link">
+                                    <i class="nav-icon fas fa-id-badge"></i>
+                                    <p>Guide Profile</p>
                                 </a>
                             </li>
                         }

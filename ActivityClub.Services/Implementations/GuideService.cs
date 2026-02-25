@@ -203,5 +203,46 @@ namespace ActivityClub.Services.Implementations
             await _guideRepo.SaveChangesAsync();
             return true;
         }
+
+        // ----------------------------
+        // Self-Service
+        // ----------------------------
+
+        // ✅ GET /me
+        public async Task<GuideResponseDto?> GetMyProfileAsync(int userId)
+        {
+            return await _guideRepo.Query()
+                .Where(g => g.UserId == userId && g.IsActive && g.User.IsActive)
+                .ProjectTo<GuideResponseDto>(_mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync();
+        }
+
+        // ✅ PUT /me
+        public async Task<bool> UpdateMyProfileAsync(int userId, UpdateGuideDto dto)
+        {
+            var guide = await _guideRepo.Query()
+                .FirstOrDefaultAsync(g => g.UserId == userId && g.IsActive && g.User.IsActive);
+
+            if (guide is null)
+                return false;
+
+            // validate profession (optional) + must be code PROFESSION
+            if (dto.ProfessionId.HasValue)
+            {
+                var profExists = await _lookupRepo.Query().AnyAsync(l =>
+                    l.LookupId == dto.ProfessionId.Value &&
+                    l.IsActive &&
+                    l.Code == LookupCodes.Profession);
+
+                if (!profExists)
+                    throw new ArgumentException("Invalid ProfessionId (must be an active profession lookup).");
+            }
+
+            // map updates onto tracked entity
+            _mapper.Map(dto, guide);
+
+            await _guideRepo.SaveChangesAsync();
+            return true;
+        }
     }
 }

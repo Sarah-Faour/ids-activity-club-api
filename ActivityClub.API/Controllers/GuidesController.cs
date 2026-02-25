@@ -2,6 +2,8 @@
 using ActivityClub.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace ActivityClub.API.Controllers
 {
@@ -63,6 +65,48 @@ namespace ActivityClub.API.Controllers
             var deleted = await _guideService.SoftDeleteAsync(id);
             if (!deleted) return NotFound();
             return NoContent();
+        }
+
+        // ----------------------------
+        // /me endpoints (self-service)
+        // ----------------------------
+
+        [Authorize(Roles = "Guide")]
+        [HttpGet("me")]
+        public async Task<ActionResult<GuideResponseDto>> GetMyGuideProfile()
+        {
+            var myId = GetCurrentUserId();
+            if (myId is null) return Unauthorized();
+
+            var guide = await _guideService.GetMyProfileAsync(myId.Value);
+            if (guide is null) return NotFound();
+
+            return Ok(guide);
+        }
+
+        [Authorize(Roles = "Guide")]
+        [HttpPut("me")]
+        public async Task<IActionResult> UpdateMyGuideProfile([FromBody] UpdateGuideDto dto)
+        {
+            var myId = GetCurrentUserId();
+            if (myId is null) return Unauthorized();
+
+            var updated = await _guideService.UpdateMyProfileAsync(myId.Value, dto);
+            if (!updated) return NotFound();
+
+            return NoContent();
+        }
+
+
+        // --------------------
+        // Helper Methods
+        // --------------------
+        private int? GetCurrentUserId()
+        {
+            var sub = User.FindFirstValue(JwtRegisteredClaimNames.Sub);
+            sub ??= User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            return int.TryParse(sub, out var id) ? id : null;
         }
     }
 }

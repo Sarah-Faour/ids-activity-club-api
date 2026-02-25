@@ -1,0 +1,48 @@
+﻿@model ActivityClub.Web.ViewModels.GuideProfile.EditGuideProfileVm
+@{
+    ViewData["Title"] = "Edit Guide Profile";
+}
+
+<div class="card">
+    <div class="card-body">
+
+        <form asp-action="Edit" method="post">
+            @Html.AntiForgeryToken()
+
+            <div class="form-group">
+                <label asp-for="FullName"></label>
+                <input asp-for="FullName" class="form-control" />
+                <span asp-validation-for="FullName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label>Joining Date</label>
+                <input class="form-control" value="@Model.JoiningDate" readonly />
+                <input asp-for="JoiningDate" type="hidden" />
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Photo">Photo (URL)</label>
+                <input asp-for="Photo" class="form-control" />
+                <span asp-validation-for="Photo" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="ProfessionId">Profession</label>
+                <select asp-for="ProfessionId" asp-items="Model.ProfessionOptions" class="form-control"></select>
+                <span asp-validation-for="ProfessionId" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-success">
+                <i class="fas fa-save"></i> Save
+            </button>
+
+            <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+        </form>
+
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
