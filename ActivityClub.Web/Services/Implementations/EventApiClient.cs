@@ -23,4 +23,9 @@ public class EventApiClient : IEventApiClient
     {
         return await _http.GetFromJsonAsync<EventResponseDto>($"api/events/{id}", ct);
     }
+    public async Task JoinAsync(int eventId, CancellationToken ct = default)
+    {
+        var res = await _http.PostAsync($"api/events/{eventId}/join", content: null, ct);
+        res.EnsureSuccessStatusCode();
+    }
 }

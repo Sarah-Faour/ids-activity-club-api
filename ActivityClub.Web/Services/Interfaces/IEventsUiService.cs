@@ -6,5 +6,8 @@ namespace ActivityClub.Web.Services.Interfaces
     {
         Task<IReadOnlyList<EventListItemVm>> GetAllAsync(CancellationToken ct = default);
         Task<EventDetailsVm?> GetByIdAsync(int eventId, CancellationToken ct = default);
+
+        // NEW
+        Task JoinEventAsync(int eventId, CancellationToken ct = default);
     }
 }

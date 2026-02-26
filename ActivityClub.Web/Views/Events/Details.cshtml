@@ -2,13 +2,30 @@
 
 @{
     ViewData["Title"] = "Event Details";
+
+    var isSignedIn = User?.Identity?.IsAuthenticated == true;
+    var isMember = isSignedIn && User.IsInRole("Member");
+
+    // Event is considered "past" if DateTo < today (same rule as API)
+    var today = DateOnly.FromDateTime(DateTime.UtcNow);
+    var isPast = Model.DateTo < today;
 }
 
 <div class="card">
     <div class="card-header">
         <h3 class="card-title">@Model.Name</h3>
-        <div class="card-tools">
+        <div class="card-tools d-flex gap-2">
             <a class="btn btn-sm btn-secondary" asp-controller="Events" asp-action="Index">Back</a>
+
+            @if (isMember && !isPast)
+            {
+                <form asp-controller="Events" asp-action="Join" asp-route-id="@Model.EventId" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-sm btn-success">
+                        Join
+                    </button>
+                </form>
+            }
         </div>
     </div>
 

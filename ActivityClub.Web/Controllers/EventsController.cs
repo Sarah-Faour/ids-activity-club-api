@@ -1,4 +1,5 @@
 ﻿using ActivityClub.Web.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ActivityClub.Web.Controllers
@@ -24,6 +25,16 @@ namespace ActivityClub.Web.Controllers
             if (vm == null) return NotFound();
 
             return View(vm);
+        }
+
+        // ✅ Member joins himself
+        [Authorize(Roles = "Member")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Join(int id, CancellationToken ct)
+        {
+            await _eventsUiService.JoinEventAsync(id, ct);
+            return RedirectToAction(nameof(Details), new { id });
         }
     }
 }

@@ -6,5 +6,8 @@ namespace ActivityClub.Web.Services.Interfaces
     {
         Task<List<EventResponseDto>> GetAllAsync(CancellationToken ct = default);
         Task<EventResponseDto?> GetByIdAsync(int id, CancellationToken ct = default);
+        
+        // NEW: member self-join
+        Task JoinAsync(int eventId, CancellationToken ct = default);
     }
 }

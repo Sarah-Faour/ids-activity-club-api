@@ -74,7 +74,7 @@ namespace ActivityClub.API.Controllers
         // --------------------------------------
 
         // POST: api/events/5/join  (authenticated member joins himself)
-        [Authorize]
+        [Authorize(Roles = "Member")]
         [HttpPost("{id:int}/join")]
         public async Task<IActionResult> JoinEvent(int id)
         {

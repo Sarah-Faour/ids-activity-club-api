@@ -102,7 +102,7 @@ namespace ActivityClub.Services.Implementations
             // 1) Load event (must exist + active)
             var ev = await _eventRepo.Query()
                 .Where(e => e.EventId == eventId && e.IsActive)
-                .Select(e => new { e.EventId, e.DateFrom })
+                .Select(e => new { e.EventId, e.DateFrom, e.DateTo })
                 .FirstOrDefaultAsync();
 
             if (ev is null)
@@ -110,12 +110,10 @@ namespace ActivityClub.Services.Implementations
 
             // 2) Prevent joining past events (API enforcement)
             var todayUtc = DateOnly.FromDateTime(DateTime.UtcNow);
-            if (ev.DateFrom < todayUtc)
+            if (ev.DateTo < todayUtc)
                 throw new InvalidOperationException("You cannot join a past event.");
 
             // 3) Get MemberId for this logged-in user
-            // IMPORTANT: this assumes Member has a UserId FK property.
-            // If your Member model uses another name, replace m.UserId accordingly.
             var memberId = await _memberRepo.Query()
                 .Where(m => m.UserId == userId && m.IsActive && m.User.IsActive)
                 .Select(m => m.MemberId)

@@ -40,6 +40,9 @@ namespace ActivityClub.Web.Services.Implementations
                 Name = e.Name,
                 Description = e.Description,
                 Destination = e.Destination,
+                // ✅ MUST populate (needed for “upcoming” logic)
+                DateFrom = e.DateFrom,
+                DateTo = e.DateTo,
                 DateFromText = e.DateFrom.ToString("yyyy-MM-dd"),
                 DateToText = e.DateTo.ToString("yyyy-MM-dd"),
                 Cost = e.Cost,
@@ -47,5 +50,12 @@ namespace ActivityClub.Web.Services.Implementations
                 StatusName = e.StatusName
             };
         }
+
+        public async Task JoinEventAsync(int eventId, CancellationToken ct = default)
+        {
+            await _eventApiClient.JoinAsync(eventId, ct);
+        }
+
+
     }
 }
