@@ -134,6 +134,25 @@ namespace ActivityClub.Services.Implementations
             return true;
         }
 
+        //For Admin-only
+        public async Task<List<EventResponseDto>> GetAllForAdminAsync()
+        {
+            return await _eventRepo.Query()
+                .OrderBy(e => e.EventId)
+                .ProjectTo<EventResponseDto>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+        }
+
+        public async Task<bool> ReactivateAsync(int id)
+        {
+            var ev = await _eventRepo.Query().FirstOrDefaultAsync(e => e.EventId == id && !e.IsActive);
+            if (ev is null) return false;
+
+            ev.IsActive = true;
+            await _eventRepo.SaveChangesAsync();
+            return true;
+        }
+
         private static void ValidateBusinessRules(DateOnly dateFrom, DateOnly dateTo, decimal cost)
         {
             if (dateTo < dateFrom)

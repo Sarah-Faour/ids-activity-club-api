@@ -1,0 +1,83 @@
+﻿@model ActivityClub.Web.ViewModels.Admin.AdminGuideEditVm
+
+@{
+    ViewData["Title"] = "Admin - Create Guide";
+}
+
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Create Guide</h1>
+            </div>
+            <div class="col-sm-6 text-right">
+                <a class="btn btn-secondary" asp-controller="AdminGuides" asp-action="Index">
+                    <i class="fas fa-arrow-left"></i> Back
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="content">
+    <div class="container-fluid">
+
+        <div class="card card-primary">
+            <div class="card-header">
+                <h3 class="card-title">Guide Details</h3>
+            </div>
+
+            <form asp-controller="AdminGuides" asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+
+                <div class="card-body">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <div class="form-group">
+                        <label asp-for="UserId"></label>
+                        <input asp-for="UserId" class="form-control" />
+                        <span asp-validation-for="UserId" class="text-danger"></span>
+                        <small class="text-muted">Enter an existing active UserId.</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="FullName"></label>
+                        <input asp-for="FullName" class="form-control" />
+                        <span asp-validation-for="FullName" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="JoiningDate"></label>
+                        <input asp-for="JoiningDate" type="date" class="form-control" />
+                        <span asp-validation-for="JoiningDate" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Photo"></label>
+                        <input asp-for="Photo" class="form-control" />
+                        <span asp-validation-for="Photo" class="text-danger"></span>
+                        <small class="text-muted">Paste an image URL (optional).</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="ProfessionId">Profession</label>
+                        <select asp-for="ProfessionId" asp-items="Model.ProfessionOptions" class="form-control"></select>
+                        <span asp-validation-for="ProfessionId" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Create
+                    </button>
+                    <a class="btn btn-secondary" asp-controller="AdminGuides" asp-action="Index">Cancel</a>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

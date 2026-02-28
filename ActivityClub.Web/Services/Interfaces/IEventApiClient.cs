@@ -9,5 +9,12 @@ namespace ActivityClub.Web.Services.Interfaces
         
         // NEW: member self-join
         Task JoinAsync(int eventId, CancellationToken ct = default);
+
+        //Admin things
+        Task<EventResponseDto> CreateAsync(CreateEventDto dto, CancellationToken ct = default);
+        Task<bool> UpdateAsync(int id, UpdateEventDto dto, CancellationToken ct = default);
+        Task<bool> DeleteAsync(int id, CancellationToken ct = default);
+        Task<List<EventResponseDto>> GetAllForAdminAsync(CancellationToken ct = default);
+        Task<bool> ReactivateAsync(int id, CancellationToken ct = default);
     }
 }

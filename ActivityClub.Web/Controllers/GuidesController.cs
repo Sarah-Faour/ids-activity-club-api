@@ -27,5 +27,6 @@ namespace ActivityClub.Web.Controllers
 
             return View(vm);
         }
+
     }
 }

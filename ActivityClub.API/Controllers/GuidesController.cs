@@ -67,6 +67,25 @@ namespace ActivityClub.API.Controllers
             return NoContent();
         }
 
+        // POST: api/guides/{id}/reactivate  (ADMIN only)
+        [Authorize(Roles = "Admin")]
+        [HttpPost("{id:int}/reactivate")]
+        public async Task<IActionResult> ReactivateGuide(int id)
+        {
+            var ok = await _guideService.ReactivateAsync(id);
+            if (!ok) return NotFound();
+            return NoContent();
+        }
+
+        // GET: api/guides/admin (ADMIN only) -> active + inactive
+        [Authorize(Roles = "Admin")]
+        [HttpGet("admin")]
+        public async Task<ActionResult<IEnumerable<GuideResponseDto>>> GetAllForAdmin()
+        {
+            var guides = await _guideService.GetAllForAdminAsync();
+            return Ok(guides);
+        }
+
         // ----------------------------
         // /me endpoints (self-service)
         // ----------------------------

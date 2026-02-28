@@ -110,6 +110,48 @@
                                 <p>Guides</p>
                             </a>
                         </li>
+
+                        @{
+                            var isAdminSection = Context.Request.Path.StartsWithSegments("/admin");
+                            var adminEventsActive = Context.Request.Path.StartsWithSegments("/admin/events");
+                            var adminGuidesActive = Context.Request.Path.StartsWithSegments("/admin/guides");
+                        }
+
+                        @if (isSignedIn && User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item has-treeview @(isAdminSection ? "menu-open" : "")">
+                                <a href="#" class="nav-link @(isAdminSection ? "active" : "")">
+                                    <i class="nav-icon fas fa-user-cog"></i>
+                                    <p>
+                                        Admin
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+
+                                <ul class="nav nav-treeview">
+
+                                    <li class="nav-item">
+                                        <a asp-controller="AdminEvents"
+                                           asp-action="Index"
+                                           class="nav-link @(adminEventsActive ? "active" : "")">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Manage Events</p>
+                                        </a>
+                                    </li>
+
+                                    <li class="nav-item">
+                                        <a asp-controller="AdminGuides"
+                                           asp-action="Index"
+                                           class="nav-link @(adminGuidesActive ? "active" : "")">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Manage Guides</p>
+                                        </a>
+                                    </li>
+
+                                </ul>
+                            </li>
+                        }
+
                         @if (isSignedIn && User.IsInRole("Member"))
                         {
                             <li class="nav-item">

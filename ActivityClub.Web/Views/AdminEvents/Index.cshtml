@@ -1,0 +1,116 @@
+﻿@model List<ActivityClub.Web.ViewModels.Admin.AdminEventListVm>
+
+@{
+    ViewData["Title"] = "Admin - Events";
+}
+
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Events</h1>
+            </div>
+            <div class="col-sm-6 text-right">
+                <a class="btn btn-primary" asp-controller="AdminEvents" asp-action="Create">
+                    <i class="fas fa-plus"></i> Create Event
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="content">
+    <div class="container-fluid">
+
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Events Management</h3>
+            </div>
+
+            <div class="card-body table-responsive p-0">
+                <table class="table table-hover text-nowrap">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Destination</th>
+                            <th>From</th>
+                            <th>To</th>
+                            <th>Cost</th>
+                            <th>Category</th>
+                            <th>Status</th>
+                            <th>Created At</th>
+                            <th>Activation State</th>
+                            <th style="width: 160px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model is { Count: > 0 })
+                        {
+                            foreach (var e in Model)
+                            {
+                                <tr>
+                                    <td>@e.EventId</td>
+                                    <td>@e.Name</td>
+                                    <td>@e.Destination</td>
+                                    <td>@e.DateFrom.ToString("yyyy-MM-dd")</td>
+                                    <td>@e.DateTo.ToString("yyyy-MM-dd")</td>
+                                    <td>@e.Cost</td>
+                                    <td>@e.CategoryName</td>
+                                    <td>@e.StatusName</td>
+                                    <td>@(e.CreatedAt?.ToString("yyyy-MM-dd") ?? "-")</td>
+                                    <td>
+                                        @if (e.IsActive == true)
+                                        {
+                                            <span class="badge bg-success">Active</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">Inactive</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (e.IsActive == true)
+                                        {
+                                            <a class="btn btn-sm btn-warning"
+                                               asp-controller="AdminEvents" asp-action="Edit" asp-route-id="@e.EventId">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+
+                                            <form asp-controller="AdminEvents" asp-action="Delete" asp-route-id="@e.EventId"
+                                                  method="post" class="d-inline">
+                                                @Html.AntiForgeryToken()
+                                                <button type="submit" class="btn btn-sm btn-danger"
+                                                        onclick="return confirm('Deactivate this event?');">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        }
+                                        else
+                                        {
+                                            <form asp-controller="AdminEvents" asp-action="Reactivate" asp-route-id="@e.EventId"
+                                                  method="post" class="d-inline">
+                                                @Html.AntiForgeryToken()
+                                                <button type="submit" class="btn btn-sm btn-success"
+                                                        onclick="return confirm('Reactivate this event?');">
+                                                    <i class="fas fa-undo"></i>
+                                                </button>
+                                            </form>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="11" class="text-center text-muted p-4">No events found.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</section>

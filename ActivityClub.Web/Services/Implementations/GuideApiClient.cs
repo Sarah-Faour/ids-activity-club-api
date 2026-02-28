@@ -37,5 +37,48 @@ namespace ActivityClub.Web.Services.Implementations
 
             return await res.Content.ReadFromJsonAsync<GuideResponseDto>(cancellationToken: ct);
         }
+
+        //Admin things
+        public async Task<GuideResponseDto> CreateAsync(CreateGuideDto dto, CancellationToken ct = default)
+        {
+            var client = _httpClientFactory.CreateClient("ActivityClubApi");
+
+            var res = await client.PostAsJsonAsync("api/guides", dto, ct);
+            res.EnsureSuccessStatusCode();
+
+            return (await res.Content.ReadFromJsonAsync<GuideResponseDto>(cancellationToken: ct))!;
+        }
+
+        public async Task<bool> UpdateAsync(int id, UpdateGuideDto dto, CancellationToken ct = default)
+        {
+            var client = _httpClientFactory.CreateClient("ActivityClubApi");
+            var res = await client.PutAsJsonAsync($"api/guides/{id}", dto, ct);
+            return res.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> DeleteAsync(int id, CancellationToken ct = default)
+        {
+            var client = _httpClientFactory.CreateClient("ActivityClubApi");
+            var res = await client.DeleteAsync($"api/guides/{id}", ct);
+            return res.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> ReactivateAsync(int id, CancellationToken ct = default)
+        {
+            var client = _httpClientFactory.CreateClient("ActivityClubApi");
+            var res = await client.PostAsync($"api/guides/{id}/reactivate", content: null, ct);
+            return res.IsSuccessStatusCode;
+        }
+
+        public async Task<List<GuideResponseDto>> GetAllForAdminAsync(CancellationToken ct = default)
+        {
+            var client = _httpClientFactory.CreateClient("ActivityClubApi");
+
+            var res = await client.GetAsync("api/guides/admin", ct);
+            res.EnsureSuccessStatusCode();
+
+            var data = await res.Content.ReadFromJsonAsync<List<GuideResponseDto>>(cancellationToken: ct);
+            return data ?? new List<GuideResponseDto>();
+        }
     }
 }

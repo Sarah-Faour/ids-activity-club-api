@@ -8,5 +8,9 @@ namespace ActivityClub.Web.Services.Interfaces
 
         Task<IReadOnlyList<SelectListItem>> GetProfessionOptionsAsync(CancellationToken ct = default);
         Task<IReadOnlyList<SelectListItem>> GetNationalityOptionsAsync(CancellationToken ct = default);
+
+        // NEW for Admin Events
+        Task<IReadOnlyList<SelectListItem>> GetEventCategoryOptionsAsync(CancellationToken ct = default);
+        Task<IReadOnlyList<SelectListItem>> GetEventStatusOptionsAsync(CancellationToken ct = default);
     }
 }

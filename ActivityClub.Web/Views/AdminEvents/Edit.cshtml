@@ -1,0 +1,105 @@
+﻿@model ActivityClub.Web.ViewModels.Admin.AdminEventEditVm
+
+@{
+    ViewData["Title"] = "Admin - Edit Event";
+    var id = (int)ViewContext.RouteData.Values["id"]!;
+}
+
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Edit Event #@id</h1>
+            </div>
+            <div class="col-sm-6 text-right">
+                <a class="btn btn-secondary" asp-controller="AdminEvents" asp-action="Index">
+                    <i class="fas fa-arrow-left"></i> Back
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="content">
+    <div class="container-fluid">
+
+        <div class="card card-warning">
+            <div class="card-header">
+                <h3 class="card-title">Update Event</h3>
+            </div>
+
+            <form asp-controller="AdminEvents" asp-action="Edit" asp-route-id="@id" method="post">
+                @Html.AntiForgeryToken()
+
+                <div class="card-body">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <div class="form-group">
+                        <label asp-for="Name"></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Description"></label>
+                        <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Destination"></label>
+                        <input asp-for="Destination" class="form-control" />
+                        <span asp-validation-for="Destination" class="text-danger"></span>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="DateFrom"></label>
+                                <input asp-for="DateFrom" type="date" class="form-control" />
+                                <span asp-validation-for="DateFrom" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="DateTo"></label>
+                                <input asp-for="DateTo" type="date" class="form-control" />
+                                <span asp-validation-for="DateTo" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="Cost"></label>
+                        <input asp-for="Cost" class="form-control" />
+                        <span asp-validation-for="Cost" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="CategoryId">Category</label>
+                        <select asp-for="CategoryId" asp-items="Model.CategoryOptions" class="form-control"></select>
+                        <span asp-validation-for="CategoryId" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="StatusId">Status</label>
+                        <select asp-for="StatusId" asp-items="Model.StatusOptions" class="form-control"></select>
+                        <span asp-validation-for="StatusId" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-warning">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
+                    <a class="btn btn-secondary" asp-controller="AdminEvents" asp-action="Index">Cancel</a>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

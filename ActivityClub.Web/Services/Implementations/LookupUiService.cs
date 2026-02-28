@@ -1,4 +1,5 @@
-﻿using ActivityClub.Web.Services.Interfaces;
+﻿using ActivityClub.Contracts.Constants;
+using ActivityClub.Web.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ActivityClub.Web.Services.Implementations
@@ -13,13 +14,19 @@ namespace ActivityClub.Web.Services.Implementations
         }
 
         public async Task<IReadOnlyList<SelectListItem>> GetGenderOptionsAsync(CancellationToken ct = default)
-            => await GetOptionsAsync("Gender", ct);
+            => await GetOptionsAsync(LookupCodes.Gender, ct);
 
         public async Task<IReadOnlyList<SelectListItem>> GetProfessionOptionsAsync(CancellationToken ct = default)
-            => await GetOptionsAsync("Profession", ct);
+            => await GetOptionsAsync(LookupCodes.Profession, ct);
 
         public async Task<IReadOnlyList<SelectListItem>> GetNationalityOptionsAsync(CancellationToken ct = default)
-            => await GetOptionsAsync("Nationality", ct);
+            => await GetOptionsAsync(LookupCodes.Nationality, ct);
+        
+        public async Task<IReadOnlyList<SelectListItem>> GetEventCategoryOptionsAsync(CancellationToken ct = default)
+            => await GetOptionsAsync(LookupCodes.ActivityCategory, ct);
+
+        public async Task<IReadOnlyList<SelectListItem>> GetEventStatusOptionsAsync(CancellationToken ct = default)
+            => await GetOptionsAsync(LookupCodes.EventStatus, ct);
 
         private async Task<IReadOnlyList<SelectListItem>> GetOptionsAsync(string code, CancellationToken ct)
         {

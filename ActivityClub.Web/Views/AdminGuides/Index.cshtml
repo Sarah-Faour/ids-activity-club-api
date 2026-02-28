@@ -1,0 +1,122 @@
+﻿@model List<ActivityClub.Web.ViewModels.Admin.AdminGuideListVm>
+
+@{
+    ViewData["Title"] = "Admin - Guides";
+}
+
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Guides</h1>
+            </div>
+            <div class="col-sm-6 text-right">
+                <a class="btn btn-primary" asp-controller="AdminGuides" asp-action="Create">
+                    <i class="fas fa-plus"></i> Create Guide
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="content">
+    <div class="container-fluid">
+
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Guides Management</h3>
+            </div>
+
+            <div class="card-body table-responsive p-0">
+                <table class="table table-hover text-nowrap">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>UserId</th>
+                            <th>Name</th>
+                            <th>Photo</th>
+                            <th>Joining Date</th>
+                            <th>Profession</th>
+                            <th>Active</th>
+                            <th style="width: 160px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model is { Count: > 0 })
+                        {
+                            foreach (var g in Model)
+                            {
+                                <tr>
+                                    <td>@g.GuideId</td>
+                                    <td>@g.UserId</td>
+                                    <td>@g.FullName</td>
+                                    <td>
+                                        @if (!string.IsNullOrWhiteSpace(g.Photo))
+                                        {
+                                            <img src="@g.Photo"
+                                                 alt="Guide photo"
+                                                 class="img-circle elevation-1"
+                                                 style="width:40px;height:40px;object-fit:cover;" />
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">-</span>
+                                        }
+                                    </td>
+                                    <td>@g.JoiningDate.ToString("yyyy-MM-dd")</td>
+                                    <td>@g.ProfessionName</td>
+                                    <td>
+                                        @if (g.IsActive)
+                                        {
+                                            <span class="badge bg-success">Yes</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">No</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (g.IsActive)
+                                        {
+                                            <a class="btn btn-sm btn-warning"
+                                               asp-controller="AdminGuides" asp-action="Edit" asp-route-id="@g.GuideId">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+
+                                            <form asp-controller="AdminGuides" asp-action="Delete" asp-route-id="@g.GuideId"
+                                                  method="post" class="d-inline">
+                                                @Html.AntiForgeryToken()
+                                                <button type="submit" class="btn btn-sm btn-danger"
+                                                        onclick="return confirm('Deactivate this guide?');">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        }
+                                        else
+                                        {
+                                            <form asp-controller="AdminGuides" asp-action="Reactivate" asp-route-id="@g.GuideId"
+                                                  method="post" class="d-inline">
+                                                @Html.AntiForgeryToken()
+                                                <button type="submit" class="btn btn-sm btn-success"
+                                                        onclick="return confirm('Reactivate this guide?');">
+                                                    <i class="fas fa-undo"></i>
+                                                </button>
+                                            </form>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="8" class="text-center text-muted p-4">No guides found.</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</section>

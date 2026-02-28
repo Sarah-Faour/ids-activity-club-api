@@ -68,6 +68,25 @@ namespace ActivityClub.API.Controllers
             return NoContent();
         }
 
+        // GET: api/events/admin (ADMIN only) -> returns active + inactive
+        [Authorize(Roles = "Admin")]
+        [HttpGet("admin")]
+        public async Task<ActionResult<IEnumerable<EventResponseDto>>> GetAllForAdmin()
+        {
+            var events = await _eventService.GetAllForAdminAsync();
+            return Ok(events);
+        }
+
+        // POST: api/events/{id}/reactivate  (ADMIN only)
+        [Authorize(Roles = "Admin")]
+        [HttpPost("{id:int}/reactivate")]
+        public async Task<IActionResult> ReactivateEvent(int id)
+        {
+            var ok = await _eventService.ReactivateAsync(id);
+            if (!ok) return NotFound();
+            return NoContent();
+        }
+
 
         // --------------------------------------
         // authenticated member joining himself

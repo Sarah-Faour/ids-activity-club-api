@@ -204,6 +204,28 @@ namespace ActivityClub.Services.Implementations
             return true;
         }
 
+        public async Task<bool> ReactivateAsync(int id)
+        {
+            var guide = await _guideRepo.Query()
+                .FirstOrDefaultAsync(g => g.GuideId == id && !g.IsActive && g.User.IsActive);
+
+            if (guide is null)
+                return false;
+
+            guide.IsActive = true;
+            await _guideRepo.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<List<GuideResponseDto>> GetAllForAdminAsync()
+        {
+            // Admin sees active + inactive, but only if User is active (optional rule; recommended)
+            return await _guideRepo.Query()
+                .Where(g => g.User.IsActive)
+                .ProjectTo<GuideResponseDto>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+        }
+
         // ----------------------------
         // Self-Service
         // ----------------------------
