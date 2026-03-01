@@ -6,10 +6,12 @@ namespace ActivityClub.Web.Services.Implementations
     public sealed class EventsUiService : IEventsUiService
     {
         private readonly IEventApiClient _eventApiClient;
+        private readonly IEventGuideApiClient _eventGuideApiClient; // ✅ NEW
 
-        public EventsUiService(IEventApiClient eventApiClient)
+        public EventsUiService(IEventApiClient eventApiClient, IEventGuideApiClient eventGuideApiClient)
         {
             _eventApiClient = eventApiClient;
+            _eventGuideApiClient = eventGuideApiClient; // ✅ NEW
         }
 
         public async Task<IReadOnlyList<EventListItemVm>> GetAllAsync(CancellationToken ct = default)
@@ -34,6 +36,9 @@ namespace ActivityClub.Web.Services.Implementations
             var e = await _eventApiClient.GetByIdAsync(eventId, ct);
             if (e == null) return null;
 
+            // ✅ NEW: active guides assigned to this event
+            var guides = await _eventGuideApiClient.GetForEventAsync(eventId, ct);
+
             return new EventDetailsVm
             {
                 EventId = e.EventId,
@@ -47,7 +52,9 @@ namespace ActivityClub.Web.Services.Implementations
                 DateToText = e.DateTo.ToString("yyyy-MM-dd"),
                 Cost = e.Cost,
                 CategoryName = e.CategoryName,
-                StatusName = e.StatusName
+                StatusName = e.StatusName,
+
+                Guides = guides // ✅ NEW
             };
         }
 

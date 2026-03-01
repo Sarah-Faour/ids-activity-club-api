@@ -1,4 +1,5 @@
-﻿namespace ActivityClub.Web.ViewModels.Events
+﻿using ActivityClub.Contracts.DTOs.EventGuides;
+namespace ActivityClub.Web.ViewModels.Events
 {
     public sealed class EventDetailsVm
     {
@@ -18,5 +19,8 @@
         public decimal Cost { get; init; }
         public string? CategoryName { get; init; }
         public string? StatusName { get; init; }
+
+        // ✅ NEW: active guides assigned to this event (from GET /api/events/{id}/guides)
+        public List<EventGuideResponseDto> Guides { get; init; } = new();
     }
 }
