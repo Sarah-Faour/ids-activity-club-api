@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using ActivityClub.Contracts.DTOs.EventGuides;
 
 namespace ActivityClub.Web.ViewModels.Admin;
 
@@ -34,4 +35,15 @@ public sealed class AdminEventEditVm
 
     public IReadOnlyList<SelectListItem> StatusOptions { get; set; }
         = Array.Empty<SelectListItem>();
+
+    //adding Assigned guides table and Dropdown to assign a guide for admin managing 
+
+    // ✅ NEW: assigned guides table (admin sees active + inactive)
+    public List<EventGuideAdminResponseDto> AssignedGuides { get; set; } = new();
+
+    // ✅ NEW: dropdown for assigning (active guides only)
+    public IReadOnlyList<SelectListItem> GuideOptions { get; set; } = Array.Empty<SelectListItem>();
+
+    // ✅ NEW: selected guide for assign dropdown (binds from <select>)
+    public int SelectedGuideId { get; set; }
 }

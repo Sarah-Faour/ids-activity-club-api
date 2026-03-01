@@ -11,11 +11,13 @@ public sealed class AdminEventsController : Controller
 {
     private readonly IAdminEventsUiService _service;
     private readonly ILookupUiService _lookups;
+    private readonly IAdminEventGuidesUiService _eventGuides;
 
-    public AdminEventsController(IAdminEventsUiService service, ILookupUiService lookups)
+    public AdminEventsController(IAdminEventsUiService service, ILookupUiService lookups, IAdminEventGuidesUiService eventGuides)
     {
         _service = service;
         _lookups = lookups;
+        _eventGuides = eventGuides;
     }
 
     // GET: /admin/events
@@ -67,6 +69,9 @@ public sealed class AdminEventsController : Controller
         vm.CategoryOptions = await _lookups.GetEventCategoryOptionsAsync(ct);
         vm.StatusOptions = await _lookups.GetEventStatusOptionsAsync(ct);
 
+        // ✅ NEW
+        await _eventGuides.LoadAssignmentsAsync(id, vm, ct);
+
         return View(vm);
     }
 
@@ -79,6 +84,10 @@ public sealed class AdminEventsController : Controller
         {
             vm.CategoryOptions = await _lookups.GetEventCategoryOptionsAsync(ct);
             vm.StatusOptions = await _lookups.GetEventStatusOptionsAsync(ct);
+
+            // ✅ NEW (so assigned table + dropdown still show)
+            await _eventGuides.LoadAssignmentsAsync(id, vm, ct);
+
             return View(vm);
         }
         var updated = await _service.UpdateAsync(id, vm, ct);
@@ -103,5 +112,22 @@ public sealed class AdminEventsController : Controller
     {
         await _service.ReactivateAsync(id, ct);
         return RedirectToAction(nameof(Index));
+    }
+
+    
+    [HttpPost("edit/{id:int}/assign-guide")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> AssignGuide(int id, AdminEventEditVm vm, CancellationToken ct)
+    {
+        await _eventGuides.AssignAsync(new AssignGuideVm { EventId = id, GuideId = vm.SelectedGuideId }, ct);
+        return RedirectToAction(nameof(Edit), new { id });
+    }
+
+    [HttpPost("edit/{id:int}/unassign-guide/{guideId:int}")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> UnassignGuide(int id, int guideId, CancellationToken ct)
+    {
+        await _eventGuides.UnassignAsync(id, guideId, ct);
+        return RedirectToAction(nameof(Edit), new { id });
     }
 }

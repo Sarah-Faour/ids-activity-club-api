@@ -62,6 +62,7 @@ namespace ActivityClub.Web
             builder.Services.AddScoped<IGuideProfileUiService, GuideProfileUiService>();
             builder.Services.AddScoped<IAdminEventsUiService, AdminEventsUiService>();
             builder.Services.AddScoped<IAdminGuidesUiService, AdminGuidesUiService>();
+            builder.Services.AddScoped<IAdminEventGuidesUiService, AdminEventGuidesUiService>();
 
 
             builder.Services.AddControllersWithViews();
