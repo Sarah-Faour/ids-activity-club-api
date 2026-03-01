@@ -108,6 +108,30 @@ namespace ActivityClub.Services.Implementations
             await _eventGuideRepo.SaveChangesAsync();
             return true;
         }
+
+        //Getting all assigned Guides(Active and Inactive)
+        public async Task<List<EventGuideAdminResponseDto>?> GetGuidesForEventForAdminAsync(int eventId)
+        {
+            var exists = await _eventRepo.Query().AnyAsync(e => e.EventId == eventId);
+            if (!exists) return null;
+
+            return await _eventGuideRepo.Query()
+                .Where(eg => eg.EventId == eventId)
+                .Select(eg => new EventGuideAdminResponseDto
+                {
+                    EventGuideId = eg.EventGuideId,
+                    EventId = eg.EventId,
+                    EventIsActive = eg.Event.IsActive,
+
+                    GuideId = eg.GuideId,
+                    GuideName = eg.Guide.FullName,
+                    GuideIsActive = eg.Guide.IsActive,
+                    GuideUserIsActive = eg.Guide.User.IsActive,
+
+                    AssignedDate = eg.AssignedDate
+                })
+                .ToListAsync();
+        }
     }
 }
 

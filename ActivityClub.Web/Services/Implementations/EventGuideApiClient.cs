@@ -34,4 +34,12 @@ public sealed class EventGuideApiClient : IEventGuideApiClient
         var res = await _http.DeleteAsync($"api/events/{eventId}/guides/{guideId}", ct);
         return res.IsSuccessStatusCode;
     }
+
+    public async Task<List<EventGuideAdminResponseDto>> GetForEventForAdminAsync(int eventId, CancellationToken ct = default)
+    {
+        var result = await _http.GetFromJsonAsync<List<EventGuideAdminResponseDto>>(
+            $"api/events/{eventId}/guides/admin", ct);
+
+        return result ?? new List<EventGuideAdminResponseDto>();
+    }
 }

@@ -16,7 +16,7 @@ namespace ActivityClub.API.Controllers
             _service = service;
         }
 
-        // GET: /api/events/{eventId}/guides  (authenticated)
+        // GET: /api/events/{eventId}/guides  
         [AllowAnonymous] //anyone can view the guides of a specific event(public read, admin-only write)
         [HttpGet]
         public async Task<ActionResult<IEnumerable<EventGuideResponseDto>>> GetGuidesForEvent([FromRoute] int eventId)
@@ -51,6 +51,16 @@ namespace ActivityClub.API.Controllers
                 return NotFound(new { message = "Assignment not found." });
 
             return NoContent();
+        }
+
+        // GET: /api/events/{eventId}/guides/admin (ADMIN only) -> returns assignments even if guide inactive
+        [Authorize(Roles = "Admin")]
+        [HttpGet("admin")]
+        public async Task<ActionResult<IEnumerable<EventGuideAdminResponseDto>>> GetGuidesForEventForAdmin(int eventId)
+        {
+            var guides = await _service.GetGuidesForEventForAdminAsync(eventId);
+            if (guides is null) return NotFound(new { message = "Event not found." });
+            return Ok(guides);
         }
     }
 }
