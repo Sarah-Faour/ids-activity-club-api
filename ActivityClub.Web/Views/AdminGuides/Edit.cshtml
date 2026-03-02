@@ -2,7 +2,7 @@
 
 @{
     ViewData["Title"] = "Admin - Edit Guide";
-    var id = (int)ViewContext.RouteData.Values["id"]!;
+    var id = int.Parse(ViewContext.RouteData.Values["id"]!.ToString()!);
 }
 
 <section class="content-header">
